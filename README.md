@@ -2,7 +2,7 @@
 
 ## Bolsa Familia
 
-Este trabajo se concentra en analizar resultados de la política pública en Brasil Bolsa Familia. Este fue establecido en el 2003. El objetivo de esta política pública era que, mediante la transferencia de dinero a familias que cumplieran ciertos requisitos, elevar las condiciones de vida para mejorar la situación de pobreza. A cambio, las familias deberían cumplir con ciertos requisitos, como cuidar con medicinas y vacunas a los hijos, y asegurarse de que vayan a la escuela. 
+Este trabajo se concentra en analizar resultados de la política pública en Brasil Bolsa Familia. Este fue establecido en el 2003. El objetivo de esta política pública es mejorar la situación de pobreza del país con un programa de transferencias. Las familias participantes deben, a cambio, cumplir ciertos requisitos, como vacunar a sus hijos y asegurarse de que vayan a la escuela.
 
 ## Objetivo del trabajo
 
