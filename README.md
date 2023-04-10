@@ -7,3 +7,9 @@ Este trabajo se concentra en analizar resultados de la política pública en Bra
 ## Objetivo del trabajo
 
 Este programa, ante muchos, tuvo un gran desempeño en Brasil y es un ejemplo para políticas públicas en América Latina. Nosotros, queremos hacer un trabajo usando distintos métodos vistos en clase, y apoyándonos de las herramientas que hemos utilizado en la carrera, para calificar si realmente Bolsa Familia fue un buen programa, qué tan bueno en cierto caso, y explicar más a fondo dichos resultados.
+
+## Referencias
+
+Artículo del [Banco Mundial](https://www.worldbank.org/en/news/feature/2010/05/27/br-bolsa-familia)
+
+
