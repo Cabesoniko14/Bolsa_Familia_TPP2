@@ -1,6 +1,6 @@
 ---
 title: "Bolsa Familia"
-author: "RSGJ"
+author: "Nieto, Naranjo, Gloria, et al."
 date: "2023-05-01"
 output:
   pdf_document: default
@@ -11,6 +11,7 @@ output:
 library(haven)
 library(ggplot2)
 library(plotly)
+library(tidyverse)
 
 data <- read_dta('../Datos/PBF_municipios_long_2.dta')
 ```
@@ -21,8 +22,10 @@ El Programa Bolsa Familia (PBF) es un programa de transferencias monetarias que 
 
 PBF ha sido ampliamente reconocido como una estrategia exitosa en la lucha contra el hambre y la pobreza en Brasil. En 2014, la Organización de las Naciones Unidas para la Alimentación y la Agricultura (FAO) destacó el papel del programa en la reducción de la inseguridad alimentaria y la pobreza extrema en el país. Según la FAO, el programa ha sido crucial para mejorar el acceso a alimentos para las poblaciones más vulnerables, especialmente las mujeres y los niños.
 
-#### Eligibilidad
 
+### Eligibilidad
+ 
+ 
 Para ser elegibles, las familias deben tener ingresos mensuales inferiores a 154 reales por persona (alrededor de $550 pesos mexicanos a mayo de 2023). Es importante destacar que se considera "familia" a una unidad básica que puede estar compuesta por individuos con o sin parentesco que comparten una misma vivienda. De esta manera, el programa se enfoca en ayudar a las personas que se encuentran en una situación vulnerable y requieren de apoyo financiero para cubrir sus necesidades básicas.
 
 El número de familias que pueden ingresar al Programa Bolsa Familia en cada municipio está limitado por una estimación previa del número de familias pobres en el área. Esta estimación se realiza a partir de los datos del Censo Demográfico y de la Encuesta Nacional por Muestras de Domicilios, ambos ejecutados por el Instituto Brasileño de Geografía y Estadística (IBGE). 
@@ -32,9 +35,11 @@ El acceso al Programa Bolsa Familia comienza con las familias consideradas prior
 Las familias podrían perder su vinculación con el programa en caso de: (a) no cumplir de manera repetitiva con los requisitos de salud y educación; (b) superar la línea de pobreza debido a un aumento de sus ingresos, o (c) no actualizar su información en el Cadastro Único.
 
 Cuando una familia sobrepasa la línea de pobreza pero sigue por debajo de medio salario mínimo mensual per cápita, no se les cancelan las transferencias inmediatamente. En su lugar, se les extienden los beneficios por dos años para garantizar que las mejoras económicas sean sostenibles. Luego de este plazo, se reevalúa la situación de la familia y, si sus ingresos siguen por encima de los límites del programa o la familia no actualiza su información, se cancelan los beneficios. Si una familia desea desvincularse voluntariamente del programa, puede hacerlo y, en caso de que sus ingresos disminuyan de nuevo, tiene derecho a volver al programa dentro de los 36 meses siguientes.
-
-#### Transferencias
-
+ 
+ 
+### Transferencias
+ 
+ 
 Existen cuatro tipos de transferencias que varían según la situación y composición de cada familia:
 
 * Beneficio básico: consiste en la entrega de 77 reales mensuales y está dirigido exclusivamente a familias que se encuentran en extrema pobreza en Brasil, lo que significa que su ingreso mensual por persona es menor a 77 reales. Este beneficio es independiente de la composición familiar y puede ser recibido incluso si no hay individuos menores de 18 años.
@@ -45,19 +50,48 @@ Existen cuatro tipos de transferencias que varían según la situación y compos
 
 * Beneficio superación de la pobreza: es una ayuda financiera adicional del Programa Bolsa Familia y está destinado a las familias que, a pesar de recibir los demás beneficios correspondientes a su composición familiar, todavía no logran superar la línea de extrema pobreza. Este beneficio se otorga de manera personalizada para cada situación familiar y se calcula para que la familia pueda alcanzar los 77 reales por persona.
 
-```{r cars}
-summary(cars)
+
+#### Datos y análisis estadístico.  
+
+
+Las variables que se usarán para realizar el análisis son: 
+
+* `pc_pbf_pop_year`: porcentaje de población del PBF en el municipio.
+* `acomp_freq_year`: tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años).
+* `ab_ef_year`: Tasa de deserción en la escuela primaria - 0 a 100.
+* `ap_ef_year` : Tasa de aprobación en la escuela primaria.
+* `cobalvoPBF_year` : Porcentaje de cobertura del público objetivo del PBF Fundamental.
+* `porteIBGE_year` : Tamaño del municipio - población.
+* `RDPC` : Renta per cápita según Censo 2010.
+* `infraescolar_EM` : Indicador de infraestructura de las escuelas de EM en el municipio - continuo.
+* `propextpobre` : Proporción de la población extremadamente pobre.
+* `rep_ef_year` : tasa de fracaso en la escuela primaria.
+* `rep_em_year` : tasa de fracaso en la escuela primaria.
+* `tesouro_year` : Transferencias totales del tesoro nacional.
+* `est_fam_PBF_2006` : Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita).
+* `est_fam_PBF_2010` : Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita).
+* `year` : Año de la estimación.
+* `agua_esgoto_inadeq_2010` : Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados.
+* `pc_lixo_2010` : Porcentaje de población en viviendas con recolección de basura.
+* `pc_luz_2010` : Porcentaje de población en hogares con electricidad.
+* `PIBcapita_year` : PIB municipal por capita.
+* `PIB_year` : PIB municipal.
+* `IDHM_E_2010` : IDH-M en 2010 - educación.
+* `IDHM_L_2010` : IDH-M en 2010 - longevidad.
+* `IDHM_R_2010` : IDH-M en 2010 - ingresos.
+
+
+```{r}
+
+interest_vars <- c('pc_pbf_pop_year','acomp_freq_year','ab_ef_year','ap_ef_year','cobalvoPBF_year','porteIBGE_year','RDPC', 'infraescolar_EM', 'propextpobre','rep_ef_year','rep_em_year','tesouro_year','est_fam_PBF_2006','est_fam_PBF_2010','year','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita_year','PIB_year','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010')
+
+data <- data[,interest_vars]
 ```
 
-## EDA
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
+#### 
 #### Referencias
+
 
 https://publications.iadb.org/publications/spanish/viewer/S%C3%ADntesis-del-programa-Bolsa-Familia-en-Brasil.pdf
 
