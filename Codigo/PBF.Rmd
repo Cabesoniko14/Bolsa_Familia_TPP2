@@ -56,37 +56,51 @@ Existen cuatro tipos de transferencias que varían según la situación y compos
 
 Las variables que se usarán para realizar el análisis son: 
 
-* `pc_pbf_pop_year`: porcentaje de población del PBF en el municipio.
-* `acomp_freq_year`: tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años).
-* `ab_ef_year`: Tasa de deserción en la escuela primaria - 0 a 100.
-* `ap_ef_year` : Tasa de aprobación en la escuela primaria.
-* `cobalvoPBF_year` : Porcentaje de cobertura del público objetivo del PBF Fundamental.
-* `porteIBGE_year` : Tamaño del municipio - población.
-* `RDPC` : Renta per cápita según Censo 2010.
-* `infraescolar_EM` : Indicador de infraestructura de las escuelas de EM en el municipio - continuo.
-* `propextpobre` : Proporción de la población extremadamente pobre.
-* `rep_ef_year` : tasa de fracaso en la escuela primaria.
-* `rep_em_year` : tasa de fracaso en la escuela primaria.
-* `tesouro_year` : Transferencias totales del tesoro nacional.
-* `est_fam_PBF_2006` : Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita).
-* `est_fam_PBF_2010` : Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita).
-* `year` : Año de la estimación.
-* `agua_esgoto_inadeq_2010` : Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados.
-* `pc_lixo_2010` : Porcentaje de población en viviendas con recolección de basura.
-* `pc_luz_2010` : Porcentaje de población en hogares con electricidad.
-* `PIBcapita_year` : PIB municipal por capita.
-* `PIB_year` : PIB municipal.
-* `IDHM_E_2010` : IDH-M en 2010 - educación.
-* `IDHM_L_2010` : IDH-M en 2010 - longevidad.
-* `IDHM_R_2010` : IDH-M en 2010 - ingresos.
+  * `pc_pbf_pop`: porcentaje de población del PBF en el municipio.
+  * `acomp_freq`: tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años).
+  * `ab_ef`: Tasa de deserción en la escuela primaria - 0 a 100.
+  * `ap_ef` : Tasa de aprobación en la escuela primaria.
+  * `cobalvoPBF` : Porcentaje de cobertura del público objetivo del PBF Fundamental.
+  * `porteIBGE` : Tamaño del municipio - población.   
+  * `rdpc_2010` : Renta per cápita según Censo 2010.
+  * `infraescolar_em_2011` : Indicador de infraestructura de las escuelas de EM en el municipio - continuo.
+  * `infraescolar_ef_2011` : Indicador de infraestructura de las escuelas de EF en el municipio - continuo.
+  * `propextpobre_2010` : Proporción de la población extremadamente pobre.
+  * `rep_ef` : tasa de fracaso en la escuela primaria.
+  * `rep_em` : tasa de fracaso en la escuela primaria.
+  * `tesouro` : Transferencias totales del tesoro nacional.
+  * `est_fam_PBF_2006` : Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita).
+  * `est_fam_PBF_2010` : Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita).
+  * `ano` : Año de la estimación.
+  * `agua_esgoto_inadeq_2010` : Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados.
+  * `pc_lixo_2010` : Porcentaje de población en viviendas con recolección de basura.
+  * `pc_luz_2010` : Porcentaje de población en hogares con electricidad.
+  * `PIBcapita` : PIB municipal por capita.
+  * `PIB` : PIB municipal.
+  * `IDHM_E_2010` : IDH-M en 2010 - educación.
+  * `IDHM_L_2010` : IDH-M en 2010 - longevidad.
+  * `IDHM_R_2010` : IDH-M en 2010 - ingresos.
+  * `pbf_capita` : 
+  * `alunospbf`
+  * `fam_pbf`
 
+```{r include=FALSE}
+
+#Eliminar columnas inecesarias para el análisis. 
+
+interest_vars <- c('pc_pbf_pop','acomp_freq','ab_ef','ap_ef','cobalvoPBF','porteIBGE','rdpc_2010', 'infraescolar_ef_2011','infraescolar_em_2011','propextpobre_2010','rep_ef','rep_em','tesouro','est_fam_PBF_2006','est_fam_PBF_2010','ano','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita','PIB','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010','pbf_capita', 'alunospbf', 'fam_pbf')
+
+interest_vars <- tolower(interest_vars)
+
+colnames(data) <- tolower(colnames(data))
+
+data <- data %>% subset(select = interest_vars)
+```
 
 ```{r}
 
-interest_vars <- c('pc_pbf_pop_year','acomp_freq_year','ab_ef_year','ap_ef_year','cobalvoPBF_year','porteIBGE_year','RDPC', 'infraescolar_EM', 'propextpobre','rep_ef_year','rep_em_year','tesouro_year','est_fam_PBF_2006','est_fam_PBF_2010','year','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita_year','PIB_year','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010')
-
-data <- data[,interest_vars]
 ```
+
 
 
 #### 
