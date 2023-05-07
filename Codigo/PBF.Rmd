@@ -107,8 +107,17 @@ summary
 
 
 ```{r}
-ggplot(data, aes(x=pc_pbf_pop)) + geom_boxplot()
+ggplotly(ggplot(data, aes(x=pc_pbf_pop)) + geom_boxplot())
 
+alpha <- 32.5#mean(data$pc_pbf_pop)
+
+data$treatment_dummy <- ifelse(data$pc_pbf_pop > alpha, 1, 0)
+```
+
+
+```{r}
+#Treatment and control plot
+ggplot(data,aes(x=treatment_dummy)) +geom_bar()
 ```
 
 
