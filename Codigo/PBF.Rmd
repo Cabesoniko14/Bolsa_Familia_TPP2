@@ -7,11 +7,12 @@ output:
   html_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo=FALSE}
 library(haven)
 library(ggplot2)
 library(plotly)
 library(tidyverse)
+library(psych)
 
 data <- read_dta('../Datos/PBF_municipios_long_2.dta')
 ```
@@ -98,6 +99,15 @@ data <- data %>% subset(select = interest_vars)
 ```
 
 ```{r}
+summary <- summary(data) %>% t()
+
+summary
+```
+
+
+
+```{r}
+ggplot(data, aes(x=pc_pbf_pop)) + geom_boxplot()
 
 ```
 
