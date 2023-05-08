@@ -1,6 +1,6 @@
 ---
 title: "Bolsa Familia"
-author: "Nieto, Naranjo, Gloria, et al."
+author: "Naranjo et al."
 date: "2023-05-01"
 output:
   pdf_document: default
@@ -13,6 +13,13 @@ library(ggplot2)
 library(plotly)
 library(tidyverse)
 library(psych)
+library(Matching)
+library(causaldata)
+library(dplyr)
+library(rgenoud)
+library(MatchIt)
+library(optmatch)
+library(Rglpk)
 
 data <- read_dta('../Datos/PBF_municipios_long_2.dta')
 ```
@@ -25,7 +32,7 @@ PBF ha sido ampliamente reconocido como una estrategia exitosa en la lucha contr
 
 
 ### Eligibilidad
- 
+
  
 Para ser elegibles, las familias deben tener ingresos mensuales inferiores a 154 reales por persona (alrededor de $550 pesos mexicanos a mayo de 2023). Es importante destacar que se considera "familia" a una unidad básica que puede estar compuesta por individuos con o sin parentesco que comparten una misma vivienda. De esta manera, el programa se enfoca en ayudar a las personas que se encuentran en una situación vulnerable y requieren de apoyo financiero para cubrir sus necesidades básicas.
 
@@ -120,6 +127,21 @@ data$treatment_dummy <- ifelse(data$pc_pbf_pop > alpha, 1, 0)
 ggplot(data,aes(x=treatment_dummy)) +geom_bar()
 ```
 
+```{r}
+# Outcome
+Y <- data %>%
+    pull(treatment_dummy)
+# Treatment
+D <- data %>%
+    pull(leg_black)
+# Matching variables
+X <- br %>%
+    dplyr::select(medianhhincom, blackpercent,
+                  leg_democrat) %>%
+as.matrix()
+# Weight = 2, oddly, denotes Mahalanobis distance
+M <- Match(Y, D, X, Weight = 2, caliper = 1)
+```
 
 
 #### 
