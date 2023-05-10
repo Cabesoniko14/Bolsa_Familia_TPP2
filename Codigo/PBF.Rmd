@@ -20,6 +20,8 @@ library(rgenoud)
 library(MatchIt)
 library(optmatch)
 library(Rglpk)
+library(lemon)
+knit_print.data.frame <- lemon_print
 
 data <- read_dta('../Datos/PBF_municipios_long_2.dta')
 ```
@@ -108,43 +110,43 @@ data <- data %>% subset(select = interest_vars)
 ```{r}
 summary <- summary(data) %>% t()
 
-summary
+summary <- as.data.frame.matrix(summary)
+
+colnames(summary) <- c('Min','1st Qu', 'Mediana', 'Media', '3rd Qu', 'Max', 'NAs')
+
+names <- colnames(summary)
+
+#summary$Min <- sub(".*:", "", summary$Min)
+
+summary <- summary %>% mutate_all(~sub(".*:", "", .))
+
+summary[] <- lapply(summary, as.double)
+```
+
+
+```{r}
+knitr::kable(summary,caption='Resumen de las variables', align = 'c', format = 'pipe', big.mark = ",",digits = 2)
 ```
 
 
 
-```{r}
-ggplotly(ggplot(data, aes(x=pc_pbf_pop)) + geom_boxplot())
 
+```{r}
+ggplot(data, aes(x=pc_pbf_pop)) + geom_boxplot()
+```
+
+
+```{r}
 alpha <- 32.5#mean(data$pc_pbf_pop)
 
 data$treatment_dummy <- ifelse(data$pc_pbf_pop > alpha, 1, 0)
-```
-
-
-```{r}
 #Treatment and control plot
 ggplot(data,aes(x=treatment_dummy)) +geom_bar()
 ```
 
-```{r}
-# Outcome
-Y <- data %>%
-    pull(treatment_dummy)
-# Treatment
-D <- data %>%
-    pull(leg_black)
-# Matching variables
-X <- br %>%
-    dplyr::select(medianhhincom, blackpercent,
-                  leg_democrat) %>%
-as.matrix()
-# Weight = 2, oddly, denotes Mahalanobis distance
-M <- Match(Y, D, X, Weight = 2, caliper = 1)
-```
-
 
 #### 
+
 #### Referencias
 
 
