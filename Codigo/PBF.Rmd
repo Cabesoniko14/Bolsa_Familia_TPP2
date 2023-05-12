@@ -10,6 +10,10 @@ output:
 ```{r setup, include=FALSE, echo=FALSE}
 library(haven)
 library(ggplot2)
+library(gridExtra)
+library(cowplot)
+library(scales)
+library(orca)
 library(plotly)
 library(tidyverse)
 library(psych)
@@ -21,6 +25,7 @@ library(MatchIt)
 library(optmatch)
 library(Rglpk)
 library(lemon)
+
 knit_print.data.frame <- lemon_print
 
 data <- read_dta('../Datos/PBF_municipios_long_2.dta')
@@ -94,7 +99,7 @@ Las variables que se usarán para realizar el análisis son:
   * `alunospbf`
   * `fam_pbf`
 
-```{r include=FALSE}
+```{r echo=FALSE}
 
 #Eliminar columnas inecesarias para el análisis. 
 
@@ -107,7 +112,7 @@ colnames(data) <- tolower(colnames(data))
 data <- data %>% subset(select = interest_vars)
 ```
 
-```{r}
+```{r echo = FALSE}
 summary <- summary(data) %>% t()
 
 summary <- as.data.frame.matrix(summary)
@@ -124,15 +129,28 @@ summary[] <- lapply(summary, as.double)
 ```
 
 
-```{r}
+```{r echo = FALSE}
 knitr::kable(summary,caption='Resumen de las variables', align = 'c', format = 'pipe', big.mark = ",",digits = 2)
 ```
 
 
 
 
-```{r}
-ggplot(data, aes(x=pc_pbf_pop)) + geom_boxplot()
+```{r echo=FALSE}
+hist <- ggplot(data, aes(x = pc_pbf_pop)) + 
+  geom_histogram(bins =100,fill = "#1f77b4") + 
+  labs(title = 'Histograma de Cobertura de PBF por Municipio', x = '% de población en PBF por municipio', y = 'Número de municipios' ) + theme_minimal() + 
+  theme(panel.border = element_blank(),plot.title = element_text(hjust = 0.5))
+
+box <- ggplot(data, aes(x = pc_pbf_pop)) + 
+  geom_boxplot(fill = "#1f77b4") + 
+  labs(title = 'Distribución de Cobertura de PBF por Municipio' ) + theme_minimal() +
+  theme(panel.border = element_blank(),plot.title = element_text(hjust = 0.5))
+
+plot_grid(hist, ncol = 1,align = 'v',height = 10)
+
+plot_grid(box, ncol = 1,align = 'v',height = 10)
+
 ```
 
 
