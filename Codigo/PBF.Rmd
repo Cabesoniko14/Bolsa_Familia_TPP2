@@ -25,7 +25,7 @@ library(MatchIt)
 library(optmatch)
 library(Rglpk)
 library(lemon)
-
+library(reshape2)
 knit_print.data.frame <- lemon_print
 
 data <- read_dta('../Datos/PBF_municipios_long_2.dta')
@@ -95,9 +95,10 @@ Las variables que se usarán para realizar el análisis son:
   * `IDHM_E_2010` : IDH-M en 2010 - educación.
   * `IDHM_L_2010` : IDH-M en 2010 - longevidad.
   * `IDHM_R_2010` : IDH-M en 2010 - ingresos.
-  * `pbf_capita` : 
-  * `alunospbf`
-  * `fam_pbf`
+  * `pbf_capita` : Valor de transferencias PBF per cápita
+  * `alunospbf` : Número de alumnos en PBF
+  * `fam_pbf` : Número de familias beneficiarias de PBF
+  * `pbf_valor` : Valor de transferencias PBF
 
 ```{r echo=FALSE}
 
@@ -107,9 +108,15 @@ interest_vars <- c('pc_pbf_pop','acomp_freq','ab_ef','ap_ef','cobalvoPBF','porte
 
 interest_vars <- tolower(interest_vars)
 
+treatment_vars_percentage <- c('pc_pbf_pop','cobalvopbf')
+
 colnames(data) <- tolower(colnames(data))
 
 data <- data %>% subset(select = interest_vars)
+
+data_treatment_percentage <- data %>% subset(select = treatment_vars_percentage) %>% melt(value.name = 'porcentaje')
+
+data_treatment_percentage <- 
 ```
 
 ```{r echo = FALSE}
