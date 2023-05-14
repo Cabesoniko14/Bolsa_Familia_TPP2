@@ -33,55 +33,46 @@ data <- read_dta('../Datos/PBF_municipios_long_2.dta')
 
 ## Bolsa Familia
 
- 
 El Programa Bolsa Familia (PBF) es un programa de transferencias monetarias que tiene como fin apoyar a las familias en condición de pobreza o pobreza extrema, esto se hace mediante transferencias que buscan tener un impacto positivo en los niveles de salud y educación de los beneficiarios. El programa fue implementado por el gobierno de Brasil en Octube de 2003 y gracias a el éxito observado ha sido elogiado por reducir la pobreza y la desigualdad en Brasil, y se ha expandido con el paso de los años para incluir a más personas.En junio de 2015, cerca del 25% de la población brasileña, es decir, 13,827,369 familias, se habían beneficiado del PBF. A pesar de su gran alcance, el programa tiene un impacto financiero moderado en el presupuesto del país, ya que representa solo el 0.45% del Producto Interno Bruto brasileño.
 
 PBF ha sido ampliamente reconocido como una estrategia exitosa en la lucha contra el hambre y la pobreza en Brasil. En 2014, la Organización de las Naciones Unidas para la Alimentación y la Agricultura (FAO) destacó el papel del programa en la reducción de la inseguridad alimentaria y la pobreza extrema en el país. Según la FAO, el programa ha sido crucial para mejorar el acceso a alimentos para las poblaciones más vulnerables, especialmente las mujeres y los niños.
 
-
 ### Eligibilidad
 
- 
-Para ser elegibles, las familias deben tener ingresos mensuales inferiores a 154 reales por persona (alrededor de $550 pesos mexicanos a mayo de 2023). Es importante destacar que se considera "familia" a una unidad básica que puede estar compuesta por individuos con o sin parentesco que comparten una misma vivienda. De esta manera, el programa se enfoca en ayudar a las personas que se encuentran en una situación vulnerable y requieren de apoyo financiero para cubrir sus necesidades básicas.
+Para ser elegibles, las familias deben tener ingresos mensuales inferiores a 154 reales por persona (alrededor de \$550 pesos mexicanos a mayo de 2023). Es importante destacar que se considera "familia" a una unidad básica que puede estar compuesta por individuos con o sin parentesco que comparten una misma vivienda. De esta manera, el programa se enfoca en ayudar a las personas que se encuentran en una situación vulnerable y requieren de apoyo financiero para cubrir sus necesidades básicas.
 
-El número de familias que pueden ingresar al Programa Bolsa Familia en cada municipio está limitado por una estimación previa del número de familias pobres en el área. Esta estimación se realiza a partir de los datos del Censo Demográfico y de la Encuesta Nacional por Muestras de Domicilios, ambos ejecutados por el Instituto Brasileño de Geografía y Estadística (IBGE). 
+El número de familias que pueden ingresar al Programa Bolsa Familia en cada municipio está limitado por una estimación previa del número de familias pobres en el área. Esta estimación se realiza a partir de los datos del Censo Demográfico y de la Encuesta Nacional por Muestras de Domicilios, ambos ejecutados por el Instituto Brasileño de Geografía y Estadística (IBGE).
 
 El acceso al Programa Bolsa Familia comienza con las familias consideradas prioritarias, como las familias quilombolas (pertenecientes a antiguas comunidades de afro-brasileros), familias indígenas, familias que obtienen sus ingresos del reciclaje de basura o familias en las que se ha identificado tanto trabajo infantil como situaciones análogas a esclavitud. Estas familias tienen un acceso garantizado, independientemente de si se ha alcanzado o no el límite municipal. Después de asignar cupos a estas familias prioritarias, se asignan los cupos restantes a las familias con menor ingreso mensual por persona. Cuando hay paridad de ingresos, se priorizan las familias con mayor número de niños y adolescentes menores de 18 años.
 
-
 Las familias podrían perder su vinculación con el programa en caso de:
 
-1. No cumplen de manera repetitiva con los requisitos de salud y educación.
-2. Superen la línea de pobreza debido a un aumento de sus ingresos.
-3. No actualicen su información en el Cadastro Único.
+1.  No cumplen de manera repetitiva con los requisitos de salud y educación.
+2.  Superen la línea de pobreza debido a un aumento de sus ingresos.
+3.  No actualicen su información en el Cadastro Único.
 
 Cuando una familia sobrepasa la línea de pobreza pero sigue por debajo de medio salario mínimo mensual per cápita, no se les cancelan las transferencias inmediatamente. En su lugar, se les extienden los beneficios por dos años para garantizar que las mejoras económicas sean sostenibles. Luego de este plazo, se reevalúa la situación de la familia y, si sus ingresos siguen por encima de los límites del programa o la familia no actualiza su información, se cancelan los beneficios. Si una familia desea desvincularse voluntariamente del programa, puede hacerlo y, en caso de que sus ingresos disminuyan de nuevo, tiene derecho a volver al programa dentro de los 36 meses siguientes.
- 
- 
+
 ### Transferencias
- 
- 
+
 Existen cuatro tipos de transferencias que varían según la situación y composición de cada familia:
 
-* Beneficio básico: consiste en la entrega de 77 reales mensuales y está dirigido exclusivamente a familias que se encuentran en extrema pobreza en Brasil, lo que significa que su ingreso mensual por persona es menor a 77 reales. Este beneficio es independiente de la composición familiar y puede ser recibido incluso si no hay individuos menores de 18 años.
+-   Beneficio básico: consiste en la entrega de 77 reales mensuales y está dirigido exclusivamente a familias que se encuentran en extrema pobreza en Brasil, lo que significa que su ingreso mensual por persona es menor a 77 reales. Este beneficio es independiente de la composición familiar y puede ser recibido incluso si no hay individuos menores de 18 años.
 
-* Beneficio variable: consiste en la entrega de 35 reales y está destinado a las familias en situación de pobreza o extrema pobreza que tienen mujeres embarazadas o en etapa de lactancia, así como también niños y adolescentes de hasta 15 años en su composición familiar. Cada familia puede recibir hasta cinco beneficios variables, uno por cada individuo elegible.
+-   Beneficio variable: consiste en la entrega de 35 reales y está destinado a las familias en situación de pobreza o extrema pobreza que tienen mujeres embarazadas o en etapa de lactancia, así como también niños y adolescentes de hasta 15 años en su composición familiar. Cada familia puede recibir hasta cinco beneficios variables, uno por cada individuo elegible.
 
-* Beneficio variable joven: consiste en la entrega de 42 reales y está destinado a las familias en situación de pobreza o extrema pobreza que tienen jóvenes de entre 16 y 17 años en su composición familiar. Cada familia puede recibir hasta dos beneficios variables jóvenes. Este beneficio se otorga hasta el mes de diciembre del año en que el adolescente cumple 18 años.
+-   Beneficio variable joven: consiste en la entrega de 42 reales y está destinado a las familias en situación de pobreza o extrema pobreza que tienen jóvenes de entre 16 y 17 años en su composición familiar. Cada familia puede recibir hasta dos beneficios variables jóvenes. Este beneficio se otorga hasta el mes de diciembre del año en que el adolescente cumple 18 años.
 
-* Beneficio superación de la pobreza: es una ayuda financiera adicional del Programa Bolsa Familia y está destinado a las familias que, a pesar de recibir los demás beneficios correspondientes a su composición familiar, todavía no logran superar la línea de extrema pobreza. Este beneficio se otorga de manera personalizada para cada situación familiar y se calcula para que la familia pueda alcanzar los 77 reales por persona.
- 
- 
+-   Beneficio superación de la pobreza: es una ayuda financiera adicional del Programa Bolsa Familia y está destinado a las familias que, a pesar de recibir los demás beneficios correspondientes a su composición familiar, todavía no logran superar la línea de extrema pobreza. Este beneficio se otorga de manera personalizada para cada situación familiar y se calcula para que la familia pueda alcanzar los 77 reales por persona.
+
 #### Datos y análisis estadístico
- 
- 
+
 El análisis de impacto del Programa Bolsa Familia de Brasil se basa en una amplia base de datos que abarca 27 estados y 5,283 municipios en los que se implementó el programa. La disponibilidad de estas cifras permite una evaluación detallada del desempeño del programa en cada uno de los municipios. Entre las variables disponibles para el análisis se encuentran: el número de familias beneficiadas, el número de alumnos beneficiados, la tasa de cobertura, la tasa de cobertura de población en extrema pobreza, la tasa de deserción escolar, el desempeño en educación primaria y secundaria, y el Índice de Desarrollo Humano, desglosado en sus componentes de educación, ingresos y longevidad (salud). Estos datos permiten evaluar el impacto del programa en las dimensiones de educación y salud, lo que a su vez permitirá una comprensión más completa de su efectividad en la lucha contra la pobreza y la desigualdad en Brasil.
- 
- 
+
 ```{r echo = FALSE}
 df <- data.frame(
-  Variable = c("pc_pbf_pop", "acomp_freq", "ab_ef", "ap_ef", "cobalvoPBF", "porteIBGE", "rdpc_2010", "infraescolar_em_2011", "infraescolar_ef_2011", "propextpobre_2010", "rep_ef", "rep_em", "tesouro", "est_fam_PBF_2006", "est_fam_PBF_2010", "ano", "agua_esgoto_inadeq_2010", "pc_lixo_2010", "pc_luz_2010", "PIBcapita", "PIB", "IDHM_E_2010", "IDHM_L_2010", "IDHM_R_2010", "pbf_capita", "alunospbf", "fam_pbf", "pbf_valor"),
-  Descripcion = c("Porcentaje de población del PBF en el municipio", "Tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años)", "Tasa de deserción en la escuela primaria - 0 a 100", "Tasa de aprobación en la escuela primaria", "Porcentaje de cobertura del público objetivo del PBF Fundamental", "Tamaño del municipio - población", "Renta per cápita según Censo 2010", "Indicador de infraestructura de las escuelas de EM en el municipio - continuo", "Indicador de infraestructura de las escuelas de EF en el municipio - continuo", "Proporción de la población extremadamente pobre", "Tasa de fracaso en la escuela primaria", "Tasa de fracaso en la escuela primaria", "Transferencias totales del tesoro nacional", "Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita)", "Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita)", "Año de la estimación", "Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados", "Porcentaje de población en viviendas con recolección de basura", "Porcentaje de población en hogares con electricidad", "PIB municipal por capita", "PIB municipal", "IDH-M en 2010 - educación", "IDH-M en 2010 - longevidad", "IDH-M en 2010 - ingresos", "Valor de transferencias PBF per cápita", "Número de alumnos en PBF", "Número de familias beneficiarias de PBF", "Valor de transferencias PBF")
+  Variable = c("pc_pbf_pop","pc_alunosPBF", "acomp_freq", "ab_ef", "ap_ef", "cobalvoPBF", "porteIBGE", "rdpc_2010", "infraescolar_em_2011", "infraescolar_ef_2011", "propextpobre_2010", "rep_ef", "rep_em", "tesouro", "est_fam_PBF_2006", "est_fam_PBF_2010", "ano", "agua_esgoto_inadeq_2010", "pc_lixo_2010", "pc_luz_2010", "PIBcapita", "PIB", "IDHM_E_2010", "IDHM_L_2010", "IDHM_R_2010", "pbf_capita", "alunospbf", "fam_pbf", "pbf_valor", "PIB_agropec", "PIB_servicios", "PIB_industria", "nome_municipio"),
+  Descripcion = c("Porcentaje de población del PBF en el municipio", "Porcentaje de alumnos del municipio que participan en PBF","Tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años)", "Tasa de deserción en la escuela primaria - 0 a 100", "Tasa de aprobación en la escuela primaria", "Porcentaje de cobertura del público objetivo del PBF Fundamental", "Tamaño del municipio - población", "Renta per cápita según Censo 2010", "Indicador de infraestructura de las escuelas de EM en el municipio - continuo", "Indicador de infraestructura de las escuelas de EF en el municipio - continuo", "Proporción de la población extremadamente pobre", "Tasa de fracaso en la escuela primaria", "Tasa de fracaso en la escuela primaria", "Transferencias totales del tesoro nacional", "Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita)", "Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita)", "Año de la estimación", "Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados", "Porcentaje de población en viviendas con recolección de basura", "Porcentaje de población en hogares con electricidad", "PIB municipal por capita", "PIB municipal", "IDH-M en 2010 - educación", "IDH-M en 2010 - longevidad", "IDH-M en 2010 - ingresos", "Valor de transferencias PBF per cápita", "Número de alumnos en PBF", "Número de familias beneficiarias de PBF", "Valor de transferencias PBF", "PIB del sector agropecuario del municipio", "PIB del sector servicios del municipio", "PIB de las industrias del municipio", "Nombre del municipio")
 )
 
 kable(df, align = "ll", caption = "Descripción de variables", format = 'latex', booktabs = TRUE) %>% 
@@ -89,11 +80,12 @@ kable(df, align = "ll", caption = "Descripción de variables", format = 'latex',
 ```
 
 
+
 ```{r echo=FALSE}
 
 #Eliminar columnas inecesarias para el análisis. 
 
-interest_vars <- c('pc_pbf_pop','acomp_freq','ab_ef','ap_ef','cobalvoPBF','porteIBGE','rdpc_2010', 'infraescolar_ef_2011','infraescolar_em_2011','propextpobre_2010','rep_ef','rep_em','tesouro','est_fam_PBF_2006','est_fam_PBF_2010','ano','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita','PIB','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010','pbf_capita', 'alunospbf', 'fam_pbf')
+interest_vars <- c('pc_pbf_pop','acomp_freq','ab_ef','ap_ef','cobalvoPBF','porteIBGE','rdpc_2010', 'infraescolar_ef_2011','infraescolar_em_2011','propextpobre_2010','rep_ef','rep_em','tesouro','est_fam_PBF_2006','est_fam_PBF_2010','ano','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita','PIB','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010','pbf_capita', 'alunospbf', 'fam_pbf', 'pc_alunosPBF', 'PIB_industria', 'PIB_servicos', 'PIB_agropec', 'nome_municipio')
 
 interest_vars <- tolower(interest_vars)
 
@@ -140,7 +132,6 @@ plot_grid(box, ncol = 1,align = 'v',height = 10)
 
 ```
 
-
 ```{r}
 alpha <- 32.5#mean(data$pc_pbf_pop)
 
@@ -149,10 +140,68 @@ data$treatment_dummy <- ifelse(data$pc_pbf_pop > alpha, 1, 0)
 ggplot(data,aes(x=treatment_dummy)) +geom_bar()
 ```
 
+### Matching
+
+El matching.
+
+Las variabes de tratamiento:
+
+-   pc_pbf_pob: porcentaje de la población que participa en PBF del municipio
+-   covalboPBF: porcentaje de cobertura del público objetivo del PBF fundamental
+-   pc_alunosPBF: porcentaje de alumnos del municipio en PBF
+
+Las covariates:
+
+-   portel_IBGE: tamaño del municipio (población)
+-   PIB_agropec: PIB agropecuario municipal del año
+-   PIB_servicos: PIB del sector servicios municipal del año
+-   PIB_industria: PIB de la industria del municipio del año
+
+
+```{r echo=FALSE}
+# Subset del df; valores del 2008
+
+colnames(data)
+
+```
+
+```{r echo=FALSE}
+# Subset del df; valores del 2008
+
+df_2008 <- data[data$ano == 2008, ]
+
+cols <- 
+test <- df_2008[complete.cases(df_2008[,c("pc_pbf_pop", "cobalvopbf", "pc_alunospbf", "pib_agropec", "pib_servicos", "pib_industria", "porteibge")]), ]
+
+```
+
+```{r echo=FALSE}
+# Subset del df; valores del 2008
+df_2008 <- data[data$ano == 2008, ]
+
+df_2008 <- df_2008[complete.cases(df_2008[,c("pc_pbf_pop", "cobalvopbf", "pc_alunospbf", "pib_agropec", "pib_servicos", "pib_industria", "porteibge")]), ]
+
+# Create the variable of treatment (only one) for those greater than the mean
+treatment <- as.numeric(rowMeans(df_2008[,c("pc_pbf_pop", "cobalvopbf", "pc_alunospbf")], na.rm = TRUE) > median(rowMeans(df_2008[,c("pc_pbf_pop", "cobalvopbf", "pc_alunospbf")], na.rm = TRUE)))
+df_2008 <- na.omit(cbind(df_2008, treatment))
+
+# Create the formula for matching
+psmodel <- c("pib_agropec", "pib_servicos", "pib_industria", "porteibge")
+
+psformula <- formula(paste("treatment ~", paste(psmodel, collapse = "+")))
+
+# Create the matching object
+m.out <- matchit(psformula, data = df_2008, method = "nearest", distance = "logit", ratio = 1)
+
+# Create the matched dataset
+data_matched <- match.data(m.out)
+
+data_matched
+
+
+```
+
 
 #### Referencias
- 
- 
-https://publications.iadb.org/publications/spanish/viewer/S%C3%ADntesis-del-programa-Bolsa-Familia-en-Brasil.pdf
 
-
+<https://publications.iadb.org/publications/spanish/viewer/S%C3%ADntesis-del-programa-Bolsa-Familia-en-Brasil.pdf>
