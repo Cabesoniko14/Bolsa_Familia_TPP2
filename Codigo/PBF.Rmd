@@ -22,6 +22,7 @@ library(causaldata)
 library(dplyr)
 library(rgenoud)
 library(MatchIt)
+library(plm)
 library(optmatch)
 library(Rglpk)
 library(lemon)
@@ -29,7 +30,6 @@ library(reshape2)
 library(kableExtra)
 library(cobalt) 
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-data <- read_dta('../Datos/PBF_municipios_long_2.dta')
 ```
 
 ## Bolsa Familia
@@ -72,8 +72,8 @@ El análisis de impacto del Programa Bolsa Familia de Brasil se basa en una ampl
 
 ```{r echo = FALSE}
 df <- data.frame(
-  Variable = c("pc_pbf_pop","pc_alunosPBF", "acomp_freq", "ab_ef", "ap_ef", "cobalvoPBF", "porteIBGE", "rdpc_2010", "infraescolar_em_2011", "infraescolar_ef_2011", "propextpobre_2010", "rep_ef", "rep_em", "tesouro", "est_fam_PBF_2006", "est_fam_PBF_2010", "ano", "agua_esgoto_inadeq_2010", "pc_lixo_2010", "pc_luz_2010", "PIBcapita", "PIB", "IDHM_E_2010", "IDHM_L_2010", "IDHM_R_2010", "pbf_capita", "alunospbf", "fam_pbf", "pbf_valor", "PIB_agropec", "PIB_servicios", "PIB_industria", "nome_municipio"),
-  Descripcion = c("Porcentaje de población del PBF en el municipio", "Porcentaje de alumnos del municipio que participan en PBF","Tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años)", "Tasa de deserción en la escuela primaria - 0 a 100", "Tasa de aprobación en la escuela primaria", "Porcentaje de cobertura del público objetivo del PBF Fundamental", "Tamaño del municipio - población", "Renta per cápita según Censo 2010", "Indicador de infraestructura de las escuelas de EM en el municipio - continuo", "Indicador de infraestructura de las escuelas de EF en el municipio - continuo", "Proporción de la población extremadamente pobre", "Tasa de fracaso en la escuela primaria", "Tasa de fracaso en la escuela primaria", "Transferencias totales del tesoro nacional", "Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita)", "Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita)", "Año de la estimación", "Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados", "Porcentaje de población en viviendas con recolección de basura", "Porcentaje de población en hogares con electricidad", "PIB municipal por capita", "PIB municipal", "IDH-M en 2010 - educación", "IDH-M en 2010 - longevidad", "IDH-M en 2010 - ingresos", "Valor de transferencias PBF per cápita", "Número de alumnos en PBF", "Número de familias beneficiarias de PBF", "Valor de transferencias PBF", "PIB del sector agropecuario del municipio", "PIB del sector servicios del municipio", "PIB de las industrias del municipio", "Nombre del municipio")
+  Variable = c("pc_pbf_pop","pc_alunosPBF", "acomp_freq", "ab_ef", "ap_ef", "cobalvoPBF", "porteIBGE", "rdpc_2010", "infraescolar_em_2011", "infraescolar_ef_2011", "propextpobre_2010", "rep_ef", "rep_em", "tesouro", "est_fam_PBF_2006", "est_fam_PBF_2010", "ano", "agua_esgoto_inadeq_2010", "pc_lixo_2010", "pc_luz_2010", "PIBcapita", "PIB", "IDHM_E_2010", "IDHM_L_2010", "IDHM_R_2010", "pbf_capita", "alunospbf", "fam_pbf", "pbf_valor", "PIB_agropec", "PIB_servicios", "PIB_industria", "nome_municipio", 'cobalvopbf'),
+  Descripcion = c("Porcentaje de población del PBF en el municipio", "Porcentaje de alumnos del municipio que participan en PBF","Tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años)", "Tasa de deserción en la escuela primaria - 0 a 100", "Tasa de aprobación en la escuela primaria", "Porcentaje de cobertura del público objetivo del PBF Fundamental", "Tamaño del municipio - población", "Renta per cápita según Censo 2010", "Indicador de infraestructura de las escuelas de EM en el municipio - continuo", "Indicador de infraestructura de las escuelas de EF en el municipio - continuo", "Proporción de la población extremadamente pobre", "Tasa de fracaso en la escuela primaria", "Tasa de fracaso en la escuela primaria", "Transferencias totales del tesoro nacional", "Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita)", "Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita)", "Año de la estimación", "Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados", "Porcentaje de población en viviendas con recolección de basura", "Porcentaje de población en hogares con electricidad", "PIB municipal por capita", "PIB municipal", "IDH-M en 2010 - educación", "IDH-M en 2010 - longevidad", "IDH-M en 2010 - ingresos", "Valor de transferencias PBF per cápita", "Número de alumnos en PBF", "Número de familias beneficiarias de PBF", "Valor de transferencias PBF", "PIB del sector agropecuario del municipio", "PIB del sector servicios del municipio", "PIB de las industrias del municipio", "Nombre del municipio", "Porcentaje de cobertura del público objetivo del PBF Fundamental")
 )
 
 kable(df, align = "ll", caption = "Descripción de variables", format = 'latex', booktabs = TRUE) %>% 
@@ -85,8 +85,10 @@ kable(df, align = "ll", caption = "Descripción de variables", format = 'latex',
 ```{r echo=FALSE}
 
 #Eliminar columnas inecesarias para el análisis. 
+data <- read_dta('../Datos/PBF_municipios_long_2.dta')
 
-interest_vars <- c('pc_pbf_pop','acomp_freq','ab_ef','ap_ef','cobalvoPBF','porteIBGE','rdpc_2010', 'infraescolar_ef_2011','infraescolar_em_2011','propextpobre_2010','rep_ef','rep_em','tesouro','est_fam_PBF_2006','est_fam_PBF_2010','ano','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita','PIB','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010','pbf_capita', 'alunospbf', 'fam_pbf', 'pc_alunosPBF', 'PIB_industria', 'PIB_servicos', 'PIB_agropec', 'nome_municipio')
+interest_vars <- c('pc_pbf_pop','acomp_freq','ab_ef','ap_ef','cobalvoPBF','porteIBGE','rdpc_2010', 'infraescolar_ef_2011','infraescolar_em_2011','propextpobre_2010','rep_ef','rep_em','tesouro','est_fam_PBF_2006','est_fam_PBF_2010','ano','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita','PIB','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010','pbf_capita', 'alunospbf', 'fam_pbf', 'pc_alunosPBF', 'PIB_industria', 'PIB_servicos', 'PIB_agropec', 'nome_municipio','cobalvopbf')
+
 
 interest_vars <- tolower(interest_vars)
 
@@ -133,13 +135,43 @@ plot_grid(box, ncol = 1,align = 'v',height = 10)
 
 ```
 
-```{r}
-alpha <- 32.5#mean(data$pc_pbf_pop)
+### Fixed Effects
 
-data$treatment_dummy <- ifelse(data$pc_pbf_pop > alpha, 1, 0)
-#Treatment and control plot
-ggplot(data,aes(x=treatment_dummy)) +geom_bar()
+```{r echo = FALSE}
+#Cuando todas las dummies son 0, entonces es el año 2008.
+fixed_effects <- data %>% subset(select = c('pc_pbf_pop','ap_ef','ab_ef','idhm_l_2010','rep_ef','cobalvopbf','porteibge','pib_industria','pib_servicos','pib_agropec'))
+fixed_effects <- as.data.frame(scale(fixed_effects))
+fixed_effects$ano <-  data$ano
+fixed_effects$nome_municipio <- data$nome_municipio
+
+#Usar como variable objetivo idh
+model_IDH <- plm(formula = idhm_l_2010 ~ cobalvopbf + pc_pbf_pop + porteibge + pib_industria + pib_servicos + pib_agropec,
+              data = fixed_effects,
+              index = c("nome_municipio","ano"), # c(group index, time index)
+              model = "within", effect = "individual")
+summary(model_IDH)
+
+confint(model_IDH)
+
+#Usar como variable objetivo la deserción escolar
+model_desercion_esc <- plm(formula = ab_ef ~ cobalvopbf + pc_pbf_pop + porteibge + pib_industria + pib_servicos + pib_agropec,
+              data = fixed_effects,
+              index = c("nome_municipio","ano"), # c(group index, time index)
+              model = "within", effect = "individual")
+summary(model_desercion_esc)
+
+confint(model_desercion_esc)
+
+#Usar como variable objetivo la aprobación escolar
+model_aprobacion_esc <- plm(formula = ap_ef ~ cobalvopbf + pc_pbf_pop + porteibge + pib_industria + pib_servicos + pib_agropec,
+              data = fixed_effects,
+              index = c("nome_municipio","ano"), # c(group index, time index)
+              model = "within", effect = "individual")
+summary(model_aprobacion_esc)
+
+confint(model_aprobacion_esc)
 ```
+
 
 ### Matching
 
