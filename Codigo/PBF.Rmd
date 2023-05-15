@@ -1,12 +1,46 @@
 ---
-title: "Bolsa Familia"
-author: "Naranjo et al."
-date: "2023-05-01"
 output:
-  pdf_document: default
-  html_document: default
+    pdf_document:
+      fig_caption: true
+      number_sections: true
+    html_document:
+      toc: true
+      theme: united
+header-includes:
+  - \usepackage{pdfpages}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \fancyfoot[C]{\thepage}
+  - \renewcommand{\headrulewidth}{0pt}
+  - \setlength{\headheight}{15pt}
+  - \usepackage[spanish]{babel}
 ---
 
+\newpage
+\thispagestyle{empty}
+\vspace*{2.5cm}
+\begin{center}
+\textbf{\Huge Evaluación de Bolsa Familia}
+\vspace{1.5cm}
+
+\vspace{1.5cm}
+{\Large Proyecto Final de Tópicos de Políticas Públicas II}
+\vspace{0.5cm}
+
+\vspace{0.5cm}
+\Large Guillermo Naranjo, Rodolfo Gloria, Sebastian Dulong y Javier Nieto
+\vspace{1.5cm}
+
+\includegraphics[width=6cm]{itam.png}
+
+\vfill
+15 de mayo del 2023
+\end{center}
+\newpage
+\tableofcontents
+\listoftables
+\newpage
 ```{r setup, include=FALSE, echo=FALSE}
 library(haven)
 library(ggplot2)
@@ -32,13 +66,13 @@ library(cobalt)
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
-## Bolsa Familia
+# Bolsa Familia
 
 El Programa Bolsa Familia (PBF) es un programa de transferencias monetarias que tiene como fin apoyar a las familias en condición de pobreza o pobreza extrema, esto se hace mediante transferencias que buscan tener un impacto positivo en los niveles de salud y educación de los beneficiarios. El programa fue implementado por el gobierno de Brasil en Octube de 2003 y gracias a el éxito observado ha sido elogiado por reducir la pobreza y la desigualdad en Brasil, y se ha expandido con el paso de los años para incluir a más personas.En junio de 2015, cerca del 25% de la población brasileña, es decir, 13,827,369 familias, se habían beneficiado del PBF. A pesar de su gran alcance, el programa tiene un impacto financiero moderado en el presupuesto del país, ya que representa solo el 0.45% del Producto Interno Bruto brasileño.
 
 PBF ha sido ampliamente reconocido como una estrategia exitosa en la lucha contra el hambre y la pobreza en Brasil. En 2014, la Organización de las Naciones Unidas para la Alimentación y la Agricultura (FAO) destacó el papel del programa en la reducción de la inseguridad alimentaria y la pobreza extrema en el país. Según la FAO, el programa ha sido crucial para mejorar el acceso a alimentos para las poblaciones más vulnerables, especialmente las mujeres y los niños.
 
-### Eligibilidad
+## Eligibilidad
 
 Para ser elegibles, las familias deben tener ingresos mensuales inferiores a 154 reales por persona (alrededor de \$550 pesos mexicanos a mayo de 2023). Es importante destacar que se considera "familia" a una unidad básica que puede estar compuesta por individuos con o sin parentesco que comparten una misma vivienda. De esta manera, el programa se enfoca en ayudar a las personas que se encuentran en una situación vulnerable y requieren de apoyo financiero para cubrir sus necesidades básicas.
 
@@ -54,7 +88,7 @@ Las familias podrían perder su vinculación con el programa en caso de:
 
 Cuando una familia sobrepasa la línea de pobreza pero sigue por debajo de medio salario mínimo mensual per cápita, no se les cancelan las transferencias inmediatamente. En su lugar, se les extienden los beneficios por dos años para garantizar que las mejoras económicas sean sostenibles. Luego de este plazo, se reevalúa la situación de la familia y, si sus ingresos siguen por encima de los límites del programa o la familia no actualiza su información, se cancelan los beneficios. Si una familia desea desvincularse voluntariamente del programa, puede hacerlo y, en caso de que sus ingresos disminuyan de nuevo, tiene derecho a volver al programa dentro de los 36 meses siguientes.
 
-### Transferencias
+## Transferencias
 
 Existen cuatro tipos de transferencias que varían según la situación y composición de cada familia:
 
@@ -66,14 +100,14 @@ Existen cuatro tipos de transferencias que varían según la situación y compos
 
 -   Beneficio superación de la pobreza: es una ayuda financiera adicional del Programa Bolsa Familia y está destinado a las familias que, a pesar de recibir los demás beneficios correspondientes a su composición familiar, todavía no logran superar la línea de extrema pobreza. Este beneficio se otorga de manera personalizada para cada situación familiar y se calcula para que la familia pueda alcanzar los 77 reales por persona.
 
-#### Datos y análisis estadístico
+# Datos y análisis estadístico
 
 El análisis de impacto del Programa Bolsa Familia de Brasil se basa en una amplia base de datos que abarca 27 estados y 5,283 municipios en los que se implementó el programa. La disponibilidad de estas cifras permite una evaluación detallada del desempeño del programa en cada uno de los municipios. Entre las variables disponibles para el análisis se encuentran: el número de familias beneficiadas, el número de alumnos beneficiados, la tasa de cobertura, la tasa de cobertura de población en extrema pobreza, la tasa de deserción escolar, el desempeño en educación primaria y secundaria, y el Índice de Desarrollo Humano, desglosado en sus componentes de educación, ingresos y longevidad (salud). Estos datos permiten evaluar el impacto del programa en las dimensiones de educación y salud, lo que a su vez permitirá una comprensión más completa de su efectividad en la lucha contra la pobreza y la desigualdad en Brasil.
 
 ```{r echo = FALSE}
 df <- data.frame(
-  Variable = c("pc_pbf_pop","pc_alunosPBF", "acomp_freq", "ab_ef", "ap_ef", "cobalvoPBF", "porteIBGE", "rdpc_2010", "infraescolar_em_2011", "infraescolar_ef_2011", "propextpobre_2010", "rep_ef", "rep_em", "tesouro", "est_fam_PBF_2006", "est_fam_PBF_2010", "ano", "agua_esgoto_inadeq_2010", "pc_lixo_2010", "pc_luz_2010", "PIBcapita", "PIB", "IDHM_E_2010", "IDHM_L_2010", "IDHM_R_2010", "pbf_capita", "alunospbf", "fam_pbf", "pbf_valor", "PIB_agropec", "PIB_servicios", "PIB_industria", "nome_municipio", 'cobalvopbf'),
-  Descripcion = c("Porcentaje de población del PBF en el municipio", "Porcentaje de alumnos del municipio que participan en PBF","Tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años)", "Tasa de deserción en la escuela primaria - 0 a 100", "Tasa de aprobación en la escuela primaria", "Porcentaje de cobertura del público objetivo del PBF Fundamental", "Tamaño del municipio - población", "Renta per cápita según Censo 2010", "Indicador de infraestructura de las escuelas de EM en el municipio - continuo", "Indicador de infraestructura de las escuelas de EF en el municipio - continuo", "Proporción de la población extremadamente pobre", "Tasa de fracaso en la escuela primaria", "Tasa de fracaso en la escuela primaria", "Transferencias totales del tesoro nacional", "Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita)", "Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita)", "Año de la estimación", "Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados", "Porcentaje de población en viviendas con recolección de basura", "Porcentaje de población en hogares con electricidad", "PIB municipal por capita", "PIB municipal", "IDH-M en 2010 - educación", "IDH-M en 2010 - longevidad", "IDH-M en 2010 - ingresos", "Valor de transferencias PBF per cápita", "Número de alumnos en PBF", "Número de familias beneficiarias de PBF", "Valor de transferencias PBF", "PIB del sector agropecuario del municipio", "PIB del sector servicios del municipio", "PIB de las industrias del municipio", "Nombre del municipio", "Porcentaje de cobertura del público objetivo del PBF Fundamental")
+  Variable = c("pc_pbf_pop","pc_alunosPBF", "acomp_freq", "ab_ef", "ap_ef", "cobalvopbf", "porteIBGE", "rdpc_2010", "infraescolar_em_2011", "infraescolar_ef_2011", "propextpobre_2010", "rep_ef", "rep_em", "tesouro", "est_fam_PBF_2006", "est_fam_PBF_2010", "ano", "agua_esgoto_inadeq_2010", "pc_lixo_2010", "pc_luz_2010", "PIBcapita", "PIB", "IDHM_E_2010", "IDHM_L_2010", "IDHM_R_2010", "pbf_capita", "alunospbf", "fam_pbf", "pbf_valor", "PIB_agropec", "PIB_servicios", "PIB_industria", "nome_municipio"),
+  Descripcion = c("Porcentaje de población del PBF en el municipio", "Porcentaje de alumnos del municipio que participan en PBF","Tasa de seguimiento de la condicionalidad de la asistencia escolar (6 a 15 años)", "Tasa de deserción en la escuela primaria - 0 a 100", "Tasa de aprobación en la escuela primaria", "Porcentaje de cobertura del público objetivo del PBF Fundamental", "Tamaño del municipio - población", "Renta per cápita según Censo 2010", "Indicador de infraestructura de las escuelas de EM en el municipio - continuo", "Indicador de infraestructura de las escuelas de EF en el municipio - continuo", "Proporción de la población extremadamente pobre", "Tasa de fracaso en la escuela primaria", "Tasa de fracaso en la escuela primaria", "Transferencias totales del tesoro nacional", "Estimación de familias PBF - 2006 (Hasta 140.00 renta per cápita)", "Estimación de familias PBF - 2010 (Hasta 140.00 renta per cápita)", "Año de la estimación", "Porcentaje de personas en hogares con suministro de agua y alcantarillado inadecuados", "Porcentaje de población en viviendas con recolección de basura", "Porcentaje de población en hogares con electricidad", "PIB municipal por capita", "PIB municipal", "IDH-M en 2010 - educación", "IDH-M en 2010 - longevidad", "IDH-M en 2010 - ingresos", "Valor de transferencias PBF per cápita", "Número de alumnos en PBF", "Número de familias beneficiarias de PBF", "Valor de transferencias PBF", "PIB del sector agropecuario del municipio", "PIB del sector servicios del municipio", "PIB de las industrias del municipio", "Nombre del municipio")
 )
 
 kable(df, align = "ll", caption = "Descripción de variables", format = 'latex', booktabs = TRUE) %>% 
@@ -135,7 +169,7 @@ plot_grid(box, ncol = 1,align = 'v',height = 10)
 
 ```
 
-### Fixed Effects
+# Efectos fijos
 
 ```{r echo = FALSE}
 #Cuando todas las dummies son 0, entonces es el año 2008.
@@ -173,28 +207,45 @@ confint(model_aprobacion_esc)
 ```
 
 
-### Matching
+# Matching
 
-Para 
+Para la evaluación de Bolsa Familia, nos enfrentamos con el problema de no tener una variable de tratamiento como tal. Es decir, no teníamos forma de conseguir los datos de cada estudiante de Brasil, y si participó o no en el programa. De alguna forma, necesitamos esto para poder comparar entre un grupo de tratamiento y uno de control, y poder aplicar con esta información distintos modelos que nos digan el impacto de la política pública.
 
-Las variabes de tratamiento:
+Ante este problema, usamos Matching, un método que nos permite asociar municipios a clusters (o grupos) con los que comparten similitudes, conteniendo una proporción similar de municipios tratados y no tratados. Entonces, se necesita una variable de tratamiento y variables que sirvan como covariadas para poder relacionar municipios entre sí que tengan probabilidades similares de ser tratados. A esto, le llamaremos puntaje de propensión. El matching se realizaría con todos los municipios únicamente del 2008, año de inicio del dataset, para poder llevar un rastreo de su desempeño a lo largo de 4 años.
+
+## Variable de tratamiento
+
+
+Pero, ¿cómo conseguimos una variable de tratamiento? Para esto, reunimos las siguientes variables con datos anuales por cada uno de los municipios:
 
 -   pc_pbf_pob: porcentaje de la población que participa en PBF del municipio
--   covalboPBF: porcentaje de cobertura del público objetivo del PBF fundamental
--   pc_alunosPBF: porcentaje de alumnos del municipio en PBF
+-   covalbopbf: porcentaje de cobertura del público objetivo del PBF fundamental
+-   pc_alunospbf: porcentaje de alumnos del municipio en PBF
 
-Las covariates:
+De este modo, asignamos con un 0 (no tratados) a aquellos municipios que no superaran la mediana de la muestra total de todos los municipios registrados en 2008 para las tres variables, y con un 1 a los que sí. Para esto, se excluyó una muestra considerablemente pequeña de municipios que no contaban con información suficiente para ser participar en el matching.
+
+
+## Covariadas
+
+
+Para las variables covariadas que nos ayuden a enconrtar similitudes entre los municipios, usamos las siguientes 4, que creemos dan una imagen general de la situación y contexto de cada municipio:
 
 -   portel_IBGE: tamaño del municipio (población)
 -   PIB_agropec: PIB agropecuario municipal del año
 -   PIB_servicos: PIB del sector servicios municipal del año
 -   PIB_industria: PIB de la industria del municipio del año
 
+Finalmente, se hizo el proceso de matching con la librería de MatchIt de R, usando el método de K-vecinos cercanos, con n= 1. Es decir, por cada municipio tratado, se le asignó un municipio de características similares, pero con tratamiento por debajo de la mediana.
+
+Antes del matching, se empezó con un total de 5565 municipios, y tras haber terminado este proceso, quedamos con un total de 5475, lo cual sigue siendo una muestra muy completa.
 
 ```{r echo=FALSE}
 
 # Subset del df; valores del 2008
 df_2008 <- data[data$ano == 2008, ]
+
+# Número de municipios antes del matching
+# nrow(df_2008)
 
 df_2008 <- df_2008[complete.cases(df_2008[,c("pc_pbf_pop", "cobalvopbf", "pc_alunospbf", "pib_agropec", "pib_servicos", "pib_industria", "porteibge")]), ]
 
@@ -213,9 +264,12 @@ m.out <- matchit(psformula, data = df_2008, method = "nearest", distance = "logi
 # Create the matched dataset
 data_matched <- match.data(m.out)
 
+# Número de municipios al final del matching
+# nrow(data_matched)
+
 ```
 
-Texto acerca del método
+A continuación, mostramos las gráficas de la distribución del puntaje de propensión antes y después de hacer matching. Se puede apreciar que ambas distribuciones son extremadamente similares. En un trabajo de Aprendizaje de Máquina, esto nos preocuparía, ya que nos indicaría que nuestro modelo está sobreajustado. No obstante, en este contexto es muy favorable. Como usamos K-vecinos cercanos únicamente para encontrar municipios parecidos a los tratados, pero sin tratamiento, y no para predecir a qué categoría pertenecerían nuevos municipios, el modelo funcionó perfectamente. Es decir, los municipios tratados y los no tratados tienen muy alta similitud, lo cual nos ayudará a medir los efectos del programa de muy buena manera.
 
 
 ```{r fig.align="center", echo=FALSE}
@@ -229,8 +283,8 @@ ps_data <- data.frame(distance = c(m.out$distance, match.data(m.out)$distance),
 ggplot(ps_data, aes(x = distance, fill = match)) +
   geom_histogram(alpha = 0.5, position = "identity", bins = 20) +
   geom_density(alpha = 0.5) +
-  labs(x = "Propensity Score", y = "Density", fill = "Matching") +
-  ggtitle("Propensity Score Distribution Before and After Matching") +
+  labs(x = "Puntaje de propensión", y = "Densidad", fill = "Matching") +
+  ggtitle("Puntaje de propensión antes y después de Matching") +
   theme_minimal() +
   facet_wrap(~ match, ncol = 2, scales = "free_x") +
   theme(plot.margin = unit(c(2, 2,2,2), "cm"))
@@ -238,7 +292,7 @@ ggplot(ps_data, aes(x = distance, fill = match)) +
 ```
 
 
-Texto sobre las gráficas y las distribuciones.
+La siguiente gráfica nos muestra mejor los resultados anteriores, colocando las funciones de densidad antes y después de Matching una encima de la otra para ver las diferencias. Se puede apreciar que a excepción de los puntajes casi cercanos a 0, tienen prácticamente la misma función densidad.
 
 ```{r fig.align="center", echo=FALSE}
 
@@ -246,8 +300,8 @@ Texto sobre las gráficas y las distribuciones.
 ggplot(ps_data, aes(x = distance, fill = match)) +
   geom_histogram(alpha = 0.5, position = "identity", bins = 20) +
   geom_density(alpha = 0.5) +
-  labs(x = "Propensity Score", y = "Density", fill = "Matching") +
-  ggtitle("Propensity Score Distribution Before and After Matching") +
+  labs(x = "Puntaje de propensión", y = "Densidad", fill = "Matching") +
+  ggtitle("Puntaje de propensión antes y después de Matching") +
   theme_minimal() +
   geom_segment(aes(x = -0.05, xend = 0.05, y = 260, yend = 260), color = "purple", linetype = "dotted", size = 0.75) +
   geom_segment(aes(x = -0.05, xend = 0.05, y = 320, yend = 320), color = "purple", linetype = "dotted", size = 0.75) +
@@ -257,8 +311,7 @@ ggplot(ps_data, aes(x = distance, fill = match)) +
 
 ```
 
-Texto sobre las distrbuciones pegadas.
 
-#### Referencias
+# Referencias
 
-<https://publications.iadb.org/publications/spanish/viewer/S%C3%ADntesis-del-programa-Bolsa-Familia-en-Brasil.pdf>
+1. <https://publications.iadb.org/publications/spanish/viewer/S%C3%ADntesis-del-programa-Bolsa-Familia-en-Brasil.pdf>
