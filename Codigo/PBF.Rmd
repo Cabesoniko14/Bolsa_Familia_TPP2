@@ -62,7 +62,9 @@ library(Rglpk)
 library(lemon)
 library(reshape2)
 library(kableExtra)
-library(cobalt) 
+library(cobalt)
+library(stargazer)
+
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -99,7 +101,8 @@ Existen cuatro tipos de transferencias que varían según la situación y compos
 -   Beneficio variable joven: consiste en la entrega de 42 reales y está destinado a las familias en situación de pobreza o extrema pobreza que tienen jóvenes de entre 16 y 17 años en su composición familiar. Cada familia puede recibir hasta dos beneficios variables jóvenes. Este beneficio se otorga hasta el mes de diciembre del año en que el adolescente cumple 18 años.
 
 -   Beneficio superación de la pobreza: es una ayuda financiera adicional del Programa Bolsa Familia y está destinado a las familias que, a pesar de recibir los demás beneficios correspondientes a su composición familiar, todavía no logran superar la línea de extrema pobreza. Este beneficio se otorga de manera personalizada para cada situación familiar y se calcula para que la familia pueda alcanzar los 77 reales por persona.
-
+ 
+\newpage
 # Datos y análisis estadístico
 
 El análisis de impacto del Programa Bolsa Familia de Brasil se basa en una amplia base de datos que abarca 27 estados y 5,283 municipios en los que se implementó el programa. La disponibilidad de estas cifras permite una evaluación detallada del desempeño del programa en cada uno de los municipios. Entre las variables disponibles para el análisis se encuentran: el número de familias beneficiadas, el número de alumnos beneficiados, la tasa de cobertura, la tasa de cobertura de población en extrema pobreza, la tasa de deserción escolar, el desempeño en educación primaria y secundaria, y el Índice de Desarrollo Humano, desglosado en sus componentes de educación, ingresos y longevidad (salud). Estos datos permiten evaluar el impacto del programa en las dimensiones de educación y salud, lo que a su vez permitirá una comprensión más completa de su efectividad en la lucha contra la pobreza y la desigualdad en Brasil.
@@ -121,7 +124,7 @@ kable(df, align = "ll", caption = "Descripción de variables", format = 'latex',
 #Eliminar columnas inecesarias para el análisis. 
 data <- read_dta('../Datos/PBF_municipios_long_2.dta')
 
-interest_vars <- c('pc_pbf_pop','acomp_freq','ab_ef','ap_ef','cobalvoPBF','porteIBGE','rdpc_2010', 'infraescolar_ef_2011','infraescolar_em_2011','propextpobre_2010','rep_ef','rep_em','tesouro','est_fam_PBF_2006','est_fam_PBF_2010','ano','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita','PIB','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010','pbf_capita', 'alunospbf', 'fam_pbf', 'pc_alunosPBF', 'PIB_industria', 'PIB_servicos', 'PIB_agropec', 'nome_municipio','cobalvopbf')
+interest_vars <- c('pc_pbf_pop','acomp_freq','ab_ef','ap_ef','cobalvoPBF','porteIBGE','rdpc_2010', 'infraescolar_ef_2011','infraescolar_em_2011','propextpobre_2010','rep_ef','rep_em','tesouro','est_fam_PBF_2006','est_fam_PBF_2010','ano','agua_esgoto_inadeq_2010','pc_lixo_2010','pc_luz_2010','PIBcapita','PIB','IDHM_E_2010','IDHM_L_2010','IDHM_R_2010','pbf_capita', 'alunospbf', 'fam_pbf', 'pc_alunosPBF', 'PIB_industria', 'PIB_servicos', 'PIB_agropec', 'nome_municipio','cobalvopbf', 'pbf_valor')
 
 
 interest_vars <- tolower(interest_vars)
@@ -151,62 +154,133 @@ summary[] <- lapply(summary, function(x) if(is.numeric(x)) format(round(x, 2), b
 kable(summary, caption = 'Resumen de las variables', align = 'c', format = 'latex', digits = 2, booktabs = TRUE) %>%
   kable_styling(latex_options = "hold_position", font_size = 8)
 ```
+\newpage
 
-```{r echo=FALSE}
+```{r echo = FALSE, fig.width=9, fig.height=4, fig.show="hold"}
 hist <- ggplot(data_treatment_percentage, aes(x = porcentaje, fill = variable, alpha =  variable)) + 
   geom_histogram(bins =100,position = "identity") + 
   labs(title = 'Histograma de Cobertura de PBF por Municipio', x = 'Población en PBF por familia (%)', y = 'Número de municipios' ) + theme_minimal() + 
   theme(panel.border = element_blank(),plot.title = element_text(hjust = 0.5)) + xlim(0, 250) + scale_alpha_manual(values = c(0.8, 0.8), guide = FALSE)
 
+print(hist)
+```
+
+```{r echo = FALSE, fig.width=9, fig.height=4}
 box <- ggplot(data_treatment_percentage, aes(x = variable, y = porcentaje)) + 
   geom_boxplot(fill = "#1f77b4") + 
   labs(title = 'Distribución de Cobertura de PBF por Municipio', x = 'Porcentaje (%)') + theme_minimal() +
   theme(panel.border = element_blank(),plot.title = element_text(hjust = 0.5)) + ylim(0,250)
 
-plot_grid(hist, ncol = 1,align = 'v',height = 10)
-
-plot_grid(box, ncol = 1,align = 'v',height = 10)
-
+print(box)
 ```
 
-# Efectos fijos
+\newpage
 
-```{r echo = FALSE}
+# Efectos Fijos
+
+La evaluación rigurosa del programa Bolsa Familia a nivel municipal es esencial para comprender su efectividad y determinar su impacto en la reducción de la pobreza y la promoción de la inclusión social. En este sentido, la regresión de efectos fijos con datos de panel se destaca como una valiosa herramienta de análisis. Esta técnica permite controlar por factores no observados, como características socioeconómicas y culturales específicas de cada municipio, que podrían influir en los resultados del programa. Al incluir los efectos fijos municipales en el modelo de regresión, se elimina la influencia de estos factores constantes a lo largo del tiempo, lo que proporciona una estimación más precisa del impacto real de Bolsa Familia en cada contexto local.
+
+Se utilizará la regresión de efectos fijos para examinar el impacto de factores específicos en la salud, la educación y la pobreza en cada municipio. Mediante la inclusión de efectos fijos municipales en el análisis, se controlará por características propias de cada municipio que permanecen constantes a lo largo del tiempo. Esto nos permitirá determinar de manera más precisa cómo variables como la inversión en infraestructura, el acceso a servicios educativos, los indicadores de salud, el nivel de ingresos y otros factores relevantes influyen en los resultados relacionados con la salud, la educación y la pobreza.
+
+1. Índice de Deserción Escolar: El índice de deserción escolar es un indicador clave para medir la capacidad del programa para retener a los estudiantes en el sistema educativo. Un índice de deserción escolar más bajo sugiere que el programa está logrando reducir la tasa de abandono escolar, lo cual es esencial para garantizar que los estudiantes beneficiarios puedan completar su educación y tener mayores oportunidades en el futuro.
+
+2. PIB per cápita: Esta variable permite evaluar el impacto del programa en el bienestar económico de los beneficiarios y en la reducción de la pobreza. Un incremento en el el PIB per cápita indicaría que el programa está logrando mejorar las condiciones económicas de las familias beneficiarias, lo cual es un objetivo central de Bolsa Familia.
+
+3. Índice de Desarrollo Humano relacionado con la Salud: El índice de desarrollo humano relacionado con la salud es esencial para evaluar cómo el programa contribuye a mejorar el acceso a servicios de salud y promover una mejor calidad de vida. Un aumento en este índice indicaría que el programa está impactando positivamente en la salud de los beneficiarios, garantizando un acceso adecuado a servicios de atención médica y mejorando su bienestar general.
+
+En resumen, estas variables nos permitirán medir y evaluar el impacto del programa Bolsa Familia en las tres áreas clave: salud, educación e ingresos. El análisis de estas variables proporcionará información valiosa sobre cómo el programa está contribuyendo al mejoramiento de la salud de los beneficiarios, su rendimiento educativo y su bienestar económico.
+
+
+```{r echo = FALSE, include = FALSE}
+###Ver efectos fijos en: 
+
 #Cuando todas las dummies son 0, entonces es el año 2008.
-fixed_effects <- data %>% subset(select = c('pc_pbf_pop','ap_ef','ab_ef','idhm_l_2010','rep_ef','cobalvopbf','porteibge','pib_industria','pib_servicos','pib_agropec'))
+fixed_effects <- data %>% subset(select = c('pc_pbf_pop','ap_ef','ab_ef','idhm_l_2010','rep_ef','cobalvopbf','porteibge','pib_industria','pib_servicos','pib_agropec', 'pbf_capita', 'pc_alunospbf','pbf_valor','pibcapita'))
 fixed_effects <- as.data.frame(scale(fixed_effects))
 fixed_effects$ano <-  data$ano
 fixed_effects$nome_municipio <- data$nome_municipio
 
 #Usar como variable objetivo idh
-model_IDH <- plm(formula = idhm_l_2010 ~ cobalvopbf + pc_pbf_pop + porteibge + pib_industria + pib_servicos + pib_agropec,
+model_IDH <- plm(formula = idhm_l_2010 ~ cobalvopbf + pc_pbf_pop + pc_alunospbf + pbf_valor + pbf_capita + porteibge + pib_industria + pib_servicos + pib_agropec,
               data = fixed_effects,
-              index = c("nome_municipio","ano"), # c(group index, time index)
+              index = c("nome_municipio","ano"),
               model = "within", effect = "individual")
-summary(model_IDH)
-
-confint(model_IDH)
 
 #Usar como variable objetivo la deserción escolar
-model_desercion_esc <- plm(formula = ab_ef ~ cobalvopbf + pc_pbf_pop + porteibge + pib_industria + pib_servicos + pib_agropec,
+model_desercion_esc <- plm(formula = ab_ef ~ cobalvopbf + pc_pbf_pop + pc_alunospbf + pbf_valor + pbf_capita + porteibge + pib_industria + pib_servicos + pib_agropec,
               data = fixed_effects,
-              index = c("nome_municipio","ano"), # c(group index, time index)
+              index = c("nome_municipio","ano"), 
               model = "within", effect = "individual")
-summary(model_desercion_esc)
-
-confint(model_desercion_esc)
 
 #Usar como variable objetivo la aprobación escolar
-model_aprobacion_esc <- plm(formula = ap_ef ~ cobalvopbf + pc_pbf_pop + porteibge + pib_industria + pib_servicos + pib_agropec,
+model_aprobacion_esc <- plm(formula = ap_ef ~ cobalvopbf + pc_pbf_pop + pc_alunospbf + pbf_valor + pbf_capita + porteibge + pib_industria + pib_servicos + pib_agropec,
               data = fixed_effects,
-              index = c("nome_municipio","ano"), # c(group index, time index)
+              index = c("nome_municipio","ano"), 
               model = "within", effect = "individual")
-summary(model_aprobacion_esc)
 
-confint(model_aprobacion_esc)
+#Usar como variable objetivo el pib per capita
+model_pib_capita <- plm(formula = pibcapita ~ cobalvopbf + pc_pbf_pop + pc_alunospbf + pbf_valor + pbf_capita + porteibge + pib_industria + pib_servicos + pib_agropec,
+              data = fixed_effects,
+              index = c("nome_municipio","ano"), 
+              model = "within", effect = "individual")
+
+#Se incluyen en el resumen modelos para describir ingresos, deserción escolar y salud.
+stargazer(model_desercion_esc,model_pib_capita,model_IDH, ci = TRUE ,type = 'latex', title = "Resumen del modelo")
 ```
+\newpage
+\begin{table}[!htbp] \centering 
+  \caption{Resumen de los modelos} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Variable dependiente:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & Deserción escolar & PIB capita & IDH longevidad \\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
+\hline \\[-1.8ex] 
+ cobalvopbf & $-$0.077$^{***}$ & 0.033$^{***}$ & 0.044$^{***}$ \\ 
+  & ($-$0.087, $-$0.067) & (0.026, 0.040) & (0.040, 0.047) \\ 
+  & & & \\ 
+ pc\_pbf\_pop & $-$0.118$^{***}$ & $-$0.046$^{***}$ & $-$0.359$^{***}$ \\ 
+  & ($-$0.147, $-$0.089) & ($-$0.066, $-$0.026) & ($-$0.370, $-$0.348) \\ 
+  & & & \\ 
+ pc\_alunospbf & 0.372$^{***}$ & $-$0.211$^{***}$ & $-$0.218$^{***}$ \\ 
+  & (0.345, 0.400) & ($-$0.230, $-$0.192) & ($-$0.228, $-$0.208) \\ 
+  & & & \\ 
+ pbf\_valor & $-$0.100$^{***}$ & $-$0.094$^{***}$ & 0.036$^{***}$ \\ 
+  & ($-$0.124, $-$0.076) & ($-$0.111, $-$0.077) & (0.027, 0.045) \\ 
+  & & & \\ 
+ pbf\_capita & $-$0.135$^{***}$ & 0.093$^{***}$ & 0.019$^{***}$ \\ 
+  & ($-$0.143, $-$0.127) & (0.087, 0.098) & (0.017, 0.022) \\ 
+  & & & \\ 
+ porteibge & 0.047$^{***}$ & $-$0.001 & 0.019$^{***}$ \\ 
+  & (0.020, 0.074) & ($-$0.019, 0.018) & (0.009, 0.029) \\ 
+  & & & \\ 
+ pib\_industria & $-$0.062$^{**}$ & 1.475$^{***}$ & 0.058$^{***}$ \\ 
+  & ($-$0.109, $-$0.014) & (1.442, 1.508) & (0.040, 0.075) \\ 
+  & & & \\ 
+ pib\_servicos & 0.108$^{***}$ & $-$0.723$^{***}$ & $-$0.045$^{***}$ \\ 
+  & (0.042, 0.174) & ($-$0.769, $-$0.677) & ($-$0.069, $-$0.021) \\ 
+  & & & \\ 
+ pib\_agropec & $-$0.063$^{***}$ & 0.213$^{***}$ & 0.041$^{***}$ \\ 
+  & ($-$0.085, $-$0.041) & (0.197, 0.228) & (0.032, 0.049) \\ 
+  & & & \\ 
+\hline \\[-1.8ex] 
+Observaciones & 27,795 & 27,820 & 27,820 \\ 
+R$^{2}$ & 0.117 & 0.359 & 0.442 \\ 
+R$^{2}$ Ajustada & $-$0.091 & 0.208 & 0.312 \\ 
+Estadístico F & 331.368$^{***}$ (df = 9; 22504) & 1,398.981$^{***}$ (df = 9; 22529) & 1,986.522$^{***}$ (df = 9; 22529) \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Nota:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table}
+ 
+## Resultados
 
 
+\newpage 
 # Matching
 
 Para la evaluación de Bolsa Familia, nos enfrentamos con el problema de no tener una variable de tratamiento como tal. Es decir, no teníamos forma de conseguir los datos de cada estudiante de Brasil, y si participó o no en el programa. De alguna forma, necesitamos esto para poder comparar entre un grupo de tratamiento y uno de control, y poder aplicar con esta información distintos modelos que nos digan el impacto de la política pública.
@@ -311,6 +385,7 @@ ggplot(ps_data, aes(x = distance, fill = match)) +
 
 ```
 
+\newpage
 
 # Referencias
 
