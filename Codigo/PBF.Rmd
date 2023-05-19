@@ -64,6 +64,8 @@ library(reshape2)
 library(kableExtra)
 library(cobalt)
 library(stargazer)
+library(knitr)
+
 
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
@@ -384,6 +386,52 @@ ggplot(ps_data, aes(x = distance, fill = match)) +
   theme(plot.margin = unit(c(2, 2, 2, 2), "cm"))
 
 ```
+\newpage
+# Modelado
+
+En este estudio, optamos por el uso del modelo de regresión por mínimos cuadrados ordinarios (OLS, por sus siglas en inglés) para examinar las relaciones entre la política pública Bolsa Familia y las tres variables objetivo que hemos identificado: tasa de empleo, nivel de educación y tasa de pobreza. Este método ha sido seleccionado debido a su simplicidad interpretativa y al hecho de que proporciona estimaciones insesgadas de los coeficientes, bajo el supuesto de que los errores son normalmente distribuidos y homoscedásticos. Además, dada la gran cantidad de datos a nivel municipal que tenemos, las estimaciones de OLS serán eficientes y consistentes, lo que nos permitirá obtener conclusiones sólidas a partir de los resultados de la regresión.
+
+La decisión de utilizar la regresión OLS también está fundamentada en nuestro enfoque de emparejamiento de los municipios. Este enfoque garantiza que nuestros municipios tratados y de control sean comparables en las dimensiones observables, permitiendo que la variación en la implementación de Bolsa Familia sea utilizada como un experimento natural para identificar su impacto en nuestras variables objetivo. Utilizando la variable de tratamiento - la implementación de Bolsa Familia - como una variable regresora en nuestro modelo de regresión, podremos examinar de manera efectiva la relación causal entre Bolsa Familia y nuestras variables objetivo. En resumen, la regresión OLS con la variable de tratamiento como regresora permite un análisis más preciso y riguroso de la efectividad de la política pública en cuestión.
+
+## Resultados
+
+```{r fig.align="center", echo=FALSE}
+
+# Realizamos la regresión OLS para cada variable de interés
+model1 <- lm(ab_ef ~ treatment, data = data_matched)
+model2 <- lm(pibcapita ~ treatment, data = data_matched)
+model3 <- lm(idhm_l_2010 ~ treatment, data = data_matched)
+
+# Creamos una tabla resumen con stargazer
+stargazer(model1, model2, model3, type = "html", title = "Efectos de Bolsa Familia sobre Tasa de Desercion Escolar, PIB per capita e IDH",out = "models_summary.html")
+
+htmltools::includeHTML("models_summary.html")
+```
+
+En cada resumen, el coeficiente de la variable treatment es de interés primordial. Este coeficiente representa el cambio promedio en la variable de resultado correspondiente por cada incremento unitario en la variable de tratamiento, controlando por las otras variables en el modelo.
+
+Si el coeficiente de treatment es positivo, eso indica que la implementación de la política de Bolsa Familia está asociada con un incremento en la variable de resultado, y si es negativo, indica una disminución. El nivel de significancia de (generalmente denotado por su p-value en la salida del resumen del modelo) indica si el efecto es estadísticamente significativo.
+
+1. El coeficiente para la tasa de deserción escolar es 3.989 y significativo al 1%; esto sugiere que la implementación de la política de Bolsa Familia está asociada con un incremento promedio de aproximadamente 4 puntos porcentuales en el abandono escolar. 
+
+2. El coeficiente para el PIB per cápita es -8.997 y significativo al 1%; esto sugiere que la implementación de la política de Bolsa Familia está asociada con un decremento promedio de aproximadamente 9 unidades en el PIB per cápita.
+
+3. El coeficiente para el Índice de Desarrollo Humano es -0.061 y significativo al 1%; esto sugiere que la implementación de la política de Bolsa Familia está asociada con un decremento promedio de aproximadamente 0.06 puntos en dicho índice. 
+
+## Conclusiones
+
+Este estudio ha proporcionado evidencia empírica de que el programa Bolsa Familia, una política pública diseñada para mejorar la calidad de vida en los municipios brasileños, parece estar correlacionado de manera inesperada con un aumento en la deserción escolar y una disminución en el PIB per cápita y el Índice de Desarrollo Humano (IDH). Estos hallazgos requieren una reflexión seria sobre el diseño y la implementación de políticas públicas similares, y plantean interrogantes sobre el mecanismo subyacente que ha generado estos resultados contraintuitivos.
+
+Existen varias explicaciones potenciales para estos hallazgos. En primer lugar, es posible que Bolsa Familia, al proporcionar un subsidio financiero a las familias, pueda estar desincentivando inadvertidamente la asistencia a la escuela y la participación en el mercado laboral, lo que contribuye al aumento de la deserción escolar y a la disminución del PIB per cápita. Además, puede haber factores de confusión no observados que estén correlacionados tanto con la adopción de la política de Bolsa Familia como con las variables de resultado, como la deserción escolar y el PIB per cápita.
+
+En segundo lugar, puede existir una relación indirecta entre Bolsa Familia y el IDH a través de su efecto en la educación y el PIB. Si Bolsa Familia está llevando a una mayor deserción escolar y a una menor participación en el mercado laboral, es probable que también esté afectando negativamente a los componentes educativos y económicos del IDH.
+
+En última instancia, estos resultados pueden sugerir fallas en la implementación, ya sea por negligencias administrativas en todo el sistema, e incluso conductas más turbias.  Una línea de investigación que puede ser relevante explorar en futuros estudios involucra la posible interferencia de la corrupción en la implementación y eficacia de la política.
+
+Es concebible que, en un contexto de corrupción generalizada, la efectividad de la política pública pueda verse mermada. Por ejemplo, los fondos destinados a las familias pueden ser desviados o mal gestionados, lo que puede generar resultados inesperados y contraproducentes como los observados en este estudio. Esto no es una acusación de corrupción, sino una hipótesis que surge de la discordancia entre la intención de la política pública y los resultados obtenidos.
+
+Los hallazgos subrayan la importancia de monitorizar y evaluar cuidadosamente los efectos inesperados de las políticas públicas. Estos resultados sugieren que la implementación puede haber tenido consecuencias no intencionadas. Futuras investigaciones deberán explorar más a fondo estos hallazgos y buscar soluciones para mitigar estos efectos adversos.
+
 
 \newpage
 
