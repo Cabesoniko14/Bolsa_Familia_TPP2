@@ -104,11 +104,11 @@ Existen cuatro tipos de transferencias que varían según la situación y compos
 
 -   Beneficio superación de la pobreza: es una ayuda financiera adicional del Programa Bolsa Familia y está destinado a las familias que, a pesar de recibir los demás beneficios correspondientes a su composición familiar, todavía no logran superar la línea de extrema pobreza. Este beneficio se otorga de manera personalizada para cada situación familiar y se calcula para que la familia pueda alcanzar los 77 reales por persona.
  
-\newpage
 # Datos y análisis estadístico
 
 El análisis de impacto del Programa Bolsa Familia de Brasil se basa en una amplia base de datos que abarca 27 estados y 5,283 municipios en los que se implementó el programa. La disponibilidad de estas cifras permite una evaluación detallada del desempeño del programa en cada uno de los municipios. Entre las variables disponibles para el análisis se encuentran: el número de familias beneficiadas, el número de alumnos beneficiados, la tasa de cobertura, la tasa de cobertura de población en extrema pobreza, la tasa de deserción escolar, el desempeño en educación primaria y secundaria, y el Índice de Desarrollo Humano, desglosado en sus componentes de educación, ingresos y longevidad (salud). Estos datos permiten evaluar el impacto del programa en las dimensiones de educación y salud, lo que a su vez permitirá una comprensión más completa de su efectividad en la lucha contra la pobreza y la desigualdad en Brasil.
 
+\newpage
 ```{r echo = FALSE}
 df <- data.frame(
   Variable = c("pc_pbf_pop","pc_alunosPBF", "acomp_freq", "ab_ef", "ap_ef", "cobalvopbf", "porteIBGE", "rdpc_2010", "infraescolar_em_2011", "infraescolar_ef_2011", "propextpobre_2010", "rep_ef", "rep_em", "tesouro", "est_fam_PBF_2006", "est_fam_PBF_2010", "ano", "agua_esgoto_inadeq_2010", "pc_lixo_2010", "pc_luz_2010", "PIBcapita", "PIB", "IDHM_E_2010", "IDHM_L_2010", "IDHM_R_2010", "pbf_capita", "alunospbf", "fam_pbf", "pbf_valor", "PIB_agropec", "PIB_servicios", "PIB_industria", "nome_municipio"),
@@ -156,6 +156,7 @@ summary[] <- lapply(summary, function(x) if(is.numeric(x)) format(round(x, 2), b
 kable(summary, caption = 'Resumen de las variables', align = 'c', format = 'latex', digits = 2, booktabs = TRUE) %>%
   kable_styling(latex_options = "hold_position", font_size = 8)
 ```
+
 \newpage
 
 ```{r echo = FALSE, fig.width=9, fig.height=4, fig.show="hold"}
@@ -281,8 +282,12 @@ Estadístico F & 331.368$^{***}$ (df = 9; 22504) & 1,398.981$^{***}$ (df = 9; 22
  
 ## Resultados
 
+Los resultados de las regresiones de efectos fijos nos indican que las variables de porcentaje de cobertura de población fundamental (cobalvopbf), transferencias de bolsa familia per cápita (pbf_capita), PIB de la industria (pib_industria) y PIB agropecuario (pib_agropec) tienen el efecto esperado hacia las variables de educación, salud e ingresos. Estas tres variables son las que tienen efectos acorde a lo que se esperaba con las variables dependientes.
 
-\newpage 
+Para las variables como porcentaje de alumnos en Bolsa Familia (pc_alunos_pbf) y PIB de Servicios (pib_servicos) se econtró que existe una relación contraria a la que se desea para las variables de salud, ingreso y educación. Conforme ambas variables aumentan, se observa que hay mayor deserción escolar y tanto el PIB per cápita como el IDH bajan.
+
+En resumen, los resultados de las regresiones de efectos fijos revelan efectos positivos esperados en variables como cobertura de población fundamental, transferencias per cápita, PIB de la industria y PIB agropecuario, en relación con educación, salud e ingresos. Sin embargo, también se observaron relaciones contrarias a lo esperado en variables como porcentaje de alumnos en Bolsa Familia y PIB de servicios. Estos hallazgos indican la necesidad de realizar análisis adicionales para comprender mejor las dinámicas subyacentes y maximizar los beneficios del programa Bolsa Familia en todas las áreas.
+
 # Matching
 
 Para la evaluación de Bolsa Familia, nos enfrentamos con el problema de no tener una variable de tratamiento como tal. Es decir, no teníamos forma de conseguir los datos de cada estudiante de Brasil, y si participó o no en el programa. De alguna forma, necesitamos esto para poder comparar entre un grupo de tratamiento y uno de control, y poder aplicar con esta información distintos modelos que nos digan el impacto de la política pública.
@@ -344,11 +349,8 @@ data_matched <- match.data(m.out)
 # nrow(data_matched)
 
 ```
-
 A continuación, mostramos las gráficas de la distribución del puntaje de propensión antes y después de hacer matching. Se puede apreciar que ambas distribuciones son extremadamente similares. En un trabajo de Aprendizaje de Máquina, esto nos preocuparía, ya que nos indicaría que nuestro modelo está sobreajustado. No obstante, en este contexto es muy favorable. Como usamos K-vecinos cercanos únicamente para encontrar municipios parecidos a los tratados, pero sin tratamiento, y no para predecir a qué categoría pertenecerían nuevos municipios, el modelo funcionó perfectamente. Es decir, los municipios tratados y los no tratados tienen muy alta similitud, lo cual nos ayudará a medir los efectos del programa de muy buena manera.
-
-
-```{r fig.align="center", echo=FALSE}
+```{r fig.align="center", echo=FALSE, fig.width=9, fig.height=4}
 
 # Create data frame with propensity score and matching indicator
 ps_data <- data.frame(distance = c(m.out$distance, match.data(m.out)$distance),
@@ -370,7 +372,7 @@ ggplot(ps_data, aes(x = distance, fill = match)) +
 
 La siguiente gráfica nos muestra mejor los resultados anteriores, colocando las funciones de densidad antes y después de Matching una encima de la otra para ver las diferencias. Se puede apreciar que a excepción de los puntajes casi cercanos a 0, tienen prácticamente la misma función densidad.
 
-```{r fig.align="center", echo=FALSE}
+```{r fig.align="center", echo=FALSE, fig.width=9, fig.height=4}
 
 # Create histogram with density curves
 ggplot(ps_data, aes(x = distance, fill = match)) +
@@ -395,7 +397,7 @@ La decisión de utilizar la regresión OLS también está fundamentada en nuestr
 
 ## Resultados
 
-```{r fig.align="center", echo=FALSE}
+```{r fig.align="center", echo=FALSE, include = FALSE}
 
 # Realizamos la regresión OLS para cada variable de interés
 model1 <- lm(ab_ef ~ treatment, data = data_matched)
@@ -403,12 +405,39 @@ model2 <- lm(pibcapita ~ treatment, data = data_matched)
 model3 <- lm(idhm_l_2010 ~ treatment, data = data_matched)
 
 # Creamos una tabla resumen con stargazer
-stargazer(model1, model2, model3, type = "html", title = "Efectos de Bolsa Familia sobre Tasa de Desercion Escolar, PIB per capita e IDH",out = "models_summary.html")
+stargazer(model1, model2, model3, type = "latex", title = "Efectos de Bolsa Familia sobre Tasa de Desercion Escolar, PIB per capita e IDH")
 
-htmltools::includeHTML("models_summary.html")
+#htmltools::includeHTML("models_summary.html")
 ```
-
-En cada resumen, el coeficiente de la variable treatment es de interés primordial. Este coeficiente representa el cambio promedio en la variable de resultado correspondiente por cada incremento unitario en la variable de tratamiento, controlando por las otras variables en el modelo.
+\begin{center}
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Variable dependiente:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & ab\_ef & pibcapita & idhm\_l\_2010 \\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
+\hline \\[-1.8ex] 
+ Tratamiento & 3.989$^{***}$ & $-$8.997$^{***}$ & $-$0.061$^{***}$ \\ 
+  & (0.084) & (0.286) & (0.001) \\ 
+  & & & \\ 
+ Control & 2.017$^{***}$ & 14.798$^{***}$ & 0.832$^{***}$ \\ 
+  & (0.059) & (0.202) & (0.001) \\ 
+  & & & \\ 
+\hline \\[-1.8ex] 
+Observaciones & 5,474 & 5,474 & 5,474 \\ 
+R$^{2}$ & 0.293 & 0.153 & 0.479 \\ 
+R$^{2}$ Ajustado & 0.293 & 0.153 & 0.479 \\ 
+Error residual estándar (df = 5472) & 3.099 & 10.575 & 0.032 \\ 
+Estadístico F (df = 1; 5472) & 2,267.128$^{***}$ & 990.460$^{***}$ & 5,023.705$^{***}$ \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{center}
+ 
+En cada resumen, el coeficiente de la variable tratamiento es de interés primordial. Este coeficiente representa el cambio promedio en la variable de resultado correspondiente por cada incremento unitario en la variable de tratamiento, controlando por las otras variables en el modelo.
 
 Si el coeficiente de treatment es positivo, eso indica que la implementación de la política de Bolsa Familia está asociada con un incremento en la variable de resultado, y si es negativo, indica una disminución. El nivel de significancia de (generalmente denotado por su p-value en la salida del resumen del modelo) indica si el efecto es estadísticamente significativo.
 
@@ -418,6 +447,89 @@ Si el coeficiente de treatment es positivo, eso indica que la implementación de
 
 3. El coeficiente para el Índice de Desarrollo Humano es -0.061 y significativo al 1%; esto sugiere que la implementación de la política de Bolsa Familia está asociada con un decremento promedio de aproximadamente 0.06 puntos en dicho índice. 
 
+A pesar de que el Matching debería hacer que la asignación del tratamiento sea "as good as random", podemos corroborar que estos efectos son correctos corriendo una regresión sobre todas las variables (Cuadro 4) que tenemos:
+
+\newpage
+```{r fig.align="center", echo=FALSE, include = FALSE}
+
+# Realizamos la regresión OLS para cada variable de interés
+model11 <- lm(ab_ef ~ ., data = data_matched[, !(colnames(data_matched) %in% c('pc_pbf_pop', 'pibcapita', 'ap_ef', 'idhm_l_2010','ano','nome_municipio', 'weights','subclass'))])
+model21 <- lm(pibcapita ~ ., data = data_matched[, !(colnames(data_matched) %in% c('pc_pbf_pop', 'ab_ef', 'ap_ef', 'idhm_l_2010','ano','nome_municipio', 'weights','subclass'))])
+model31 <- lm(idhm_l_2010 ~ ., data = data_matched[, !(colnames(data_matched) %in% c('pc_pbf_pop', 'ab_ef', 'ap_ef', 'pibcapita','ano','nome_municipio', 'weights','subclass'))])
+
+# Creamos una tabla resumen con stargazer
+stargazer(model11, model21, model31, type = "latex", title = "Efectos de Bolsa Familia sobre Tasa de Desercion Escolar, PIB per capita e IDH")
+
+#htmltools::includeHTML("models_summary1.html")
+```
+
+\begin{table}[!htbp] \centering 
+  \caption{Efectos de Bolsa Familia sobre Tasa de Desercion Escolar, PIB per capita e IDH} 
+  \label{} 
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & ab\_ef & pibcapita & idhm\_l\_2010 \\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
+\hline \\[-1.8ex] 
+ cobalvopbf & $-$0.003 & 0.009 & 0.00003 \\ 
+  & (0.002) & (0.007) & (0.00002) \\ 
+  & & & \\ 
+ porteibge & 0.373$^{***}$ & 0.646$^{***}$ & 0.001$^{***}$ \\ 
+  & (0.040) & (0.136) & (0.0004) \\ 
+  & & & \\ 
+ rdpc\_2010 & 0.003$^{***}$ & $-$0.002 & $-$0.00001 \\ 
+  & (0.001) & (0.003) & (0.00001) \\ 
+  & & & \\ 
+ propextpobre\_2010 & $-$6.050$^{***}$ & 4.519 & $-$0.062$^{***}$ \\ 
+  & (0.888) & (3.004) & (0.008) \\ 
+  & & & \\ 
+ rep\_ef & 0.101$^{***}$ & 0.130$^{***}$ & $-$0.0003$^{***}$ \\ 
+  & (0.007) & (0.025) & (0.0001) \\ 
+  & & & \\ 
+ rep\_em & $-$0.046$^{***}$ & 0.014 & 0.0001$^{**}$ \\ 
+  & (0.006) & (0.021) & (0.0001) \\ 
+  & & & \\ 
+ pbf\_capita & 0.003$^{***}$ & $-$0.004 & $-$0.0001$^{***}$ \\ 
+  & (0.001) & (0.004) & (0.00001) \\ 
+  & & & \\ 
+ alunospbf & $-$0.0001 & $-$0.0005$^{***}$ & 0.00000$^{***}$ \\ 
+  & (0.00005) & (0.0002) & (0.00000) \\ 
+  & & & \\ 
+ fam\_pbf & 0.001$^{***}$ & 0.0004 & $-$0.00000$^{***}$ \\ 
+  & (0.0001) & (0.0005) & (0.00000) \\ 
+  & & & \\ 
+ pc\_alunospbf & 0.001 & $-$0.083$^{***}$ & $-$0.0001$^{***}$ \\ 
+  & (0.003) & (0.010) & (0.00003) \\ 
+  & & & \\ 
+ pbf\_valor & $-$0.00000$^{***}$ & 0.00000$^{***}$ & 0.000 \\ 
+  & (0.00000) & (0.00000) & (0.000) \\ 
+  & & & \\ 
+ treatment & 0.581$^{***}$ & $-$0.524 & $-$0.003$^{**}$ \\ 
+  & (0.128) & (0.434) & (0.001) \\ 
+  & & & \\ 
+ distance & 0.857$^{***}$ & $-$20.020$^{***}$ & $-$0.011$^{***}$ \\ 
+  & (0.262) & (0.888) & (0.002) \\ 
+  & & & \\ 
+ Constant & 25.925$^{***}$ & 8.020 & 0.694$^{***}$ \\ 
+  & (2.022) & (6.843) & (0.019) \\ 
+  & & & \\ 
+\hline \\[-1.8ex] 
+Observations & 5,474 & 5,474 & 5,474 \\ 
+R$^{2}$ & 0.551 & 0.471 & 0.726 \\ 
+Adjusted R$^{2}$ & 0.548 & 0.468 & 0.725 \\ 
+Residual Std. Error (df = 5445) & 2.476 & 8.382 & 0.023 \\ 
+F Statistic (df = 28; 5445) & 238.339$^{***}$ & 172.946$^{***}$ & 516.126$^{***}$ \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table}
+
+Aquí podemos observar que a pesar de que los efectos controlados son menores, el signo y la significacia se mantienen, indicando que el programa de Bolsa Familia produce efectos adversos a los que esperaríamos. La estimación de los coeficientes no es la misma puesto que en teoría, el Matching absorbe los efectos de los confounders y produce distribuciones los más iguales posibles, pero naturalmente en datos reales esta discrepancia puede ser mayor debido a una diversidad de factores.
+
 ## Conclusiones
 
 Este estudio ha proporcionado evidencia empírica de que el programa Bolsa Familia, una política pública diseñada para mejorar la calidad de vida en los municipios brasileños, parece estar correlacionado de manera inesperada con un aumento en la deserción escolar y una disminución en el PIB per cápita y el Índice de Desarrollo Humano (IDH). Estos hallazgos requieren una reflexión seria sobre el diseño y la implementación de políticas públicas similares, y plantean interrogantes sobre el mecanismo subyacente que ha generado estos resultados contraintuitivos.
@@ -426,7 +538,7 @@ Existen varias explicaciones potenciales para estos hallazgos. En primer lugar, 
 
 En segundo lugar, puede existir una relación indirecta entre Bolsa Familia y el IDH a través de su efecto en la educación y el PIB. Si Bolsa Familia está llevando a una mayor deserción escolar y a una menor participación en el mercado laboral, es probable que también esté afectando negativamente a los componentes educativos y económicos del IDH.
 
-En última instancia, estos resultados pueden sugerir fallas en la implementación, ya sea por negligencias administrativas en todo el sistema, e incluso conductas más turbias.  Una línea de investigación que puede ser relevante explorar en futuros estudios involucra la posible interferencia de la corrupción en la implementación y eficacia de la política.
+En última instancia, estos resultados pueden sugerir fallas en la implementación, ya sea por negligencias administrativas en todo el sistema, falta de capacidad para monitorear a los beneficiarios, e incluso conductas más turbias.  Una línea de investigación que puede ser relevante explorar en futuros estudios involucra la posible interferencia de la corrupción en la implementación y eficacia de la política.
 
 Es concebible que, en un contexto de corrupción generalizada, la efectividad de la política pública pueda verse mermada. Por ejemplo, los fondos destinados a las familias pueden ser desviados o mal gestionados, lo que puede generar resultados inesperados y contraproducentes como los observados en este estudio. Esto no es una acusación de corrupción, sino una hipótesis que surge de la discordancia entre la intención de la política pública y los resultados obtenidos.
 
@@ -437,4 +549,14 @@ Los hallazgos subrayan la importancia de monitorizar y evaluar cuidadosamente lo
 
 # Referencias
 
-1. <https://publications.iadb.org/publications/spanish/viewer/S%C3%ADntesis-del-programa-Bolsa-Familia-en-Brasil.pdf>
+Banco Interamericano de Desarrollo. (2016). Síntesis del Programa Bolsa Familia en brasil | publications. https://publications.iadb.org/en/publications/spanish/viewer/S%C3%ADntesis-del-programa-Bolsa-Familia-en-Brasil.pdf
+
+Bandiera, A. (2023). Presentaciones Tópicos políticas públicas.
+
+Lindert, K., Linder, A., Hobbs, J., & De la Brière, B. (2007). The Nuts and Bolts of Brazil’s Bolsa Família Program: Implementing Conditional Cash Transfers in a Decentralized Context. World Bank SP Discussion Paper, No. 0709.
+
+Soares, S., Ribas, R. P., & Osório, R. G. (2010). Evaluating the Impact of Brazil's Bolsa Família: Cash Transfer Programmes in Comparative Perspective. Latin American Research Review.
+
+# Repositorio
+
+[Bolsa familia](https://github.com/Cabesoniko14/Bolsa_Familia_TPP2)
